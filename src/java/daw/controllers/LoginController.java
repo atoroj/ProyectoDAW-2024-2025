@@ -42,7 +42,7 @@ public class LoginController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String vista;
+        String vista = "";
         String accion = request.getServletPath();
         if (request.getServletPath().equals("/login")) {
             if (request.getPathInfo() != null) {
@@ -55,15 +55,17 @@ public class LoginController extends HttpServlet {
                 break;
             case "/logout":
                 session.invalidate();
-                vista = "main";
+                response.sendRedirect("http://localhost:8080/universidad/main");
                 break;
             case "/error":
                 vista = "error";
             default:
                 vista = "error";
         }
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/" + vista + ".jsp");
-        rd.forward(request, response);
+        if (!vista.equals("")) {
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/" + vista + ".jsp");
+            rd.forward(request, response);
+        }
     }
 
     @Override
