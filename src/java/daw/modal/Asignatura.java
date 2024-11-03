@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
@@ -15,6 +17,9 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "asignaturas")
+@NamedQueries({
+    @NamedQuery(name = "Asignatura.findAll", query = "SELECT a FROM Asignatura a"),
+    @NamedQuery(name = "Asignatura.findById", query = "SELECT a FROM Asignatura a WHERE a.id =:id")})
 public class Asignatura implements Serializable {
 
     private static final long serialVersionUID = 1L;

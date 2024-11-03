@@ -4,6 +4,14 @@
  */
 package daw.controllers;
 
+import daw.modal.Asignatura;
+import daw.modal.Usuario;
+import daw.modal.UsuarioAsignatura;
+import jakarta.annotation.Resource;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,6 +19,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.UserTransaction;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,69 +32,78 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(name = "AsignaturaController", urlPatterns = {"/asignatura/*"})
 public class AsignaturaController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AsignaturaController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AsignaturaController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
+    @PersistenceContext(unitName = "UniversidadPU")
+    private EntityManager em;
+    @Resource
+    private UserTransaction utx;
+    private static final Logger Log = Logger.getLogger(UsuarioController.class.getName());
+    HttpSession session;
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String vista;
+        String accion = "/main";
+        String tipo = request.getServletPath();
+        session = request.getSession();
+        if (tipo.equals("/asignatura")) {
+            if (request.getPathInfo() != null) {
+                accion = request.getPathInfo();
+            } else {
+                accion = "error";
+            }
+        }
+        switch (accion) {
+            case "/main":
+                vista = "main";
+                break;
+            case "/listarasignaturas":
+                List<Asignatura> asignaturaList;
+                TypedQuery<Asignatura> asignaturas = em.createNamedQuery("Asignatura.findAll", Asignatura.class);
+                asignaturaList = asignaturas.getResultList();
+                request.setAttribute("asignaturas", asignaturaList);
+                vista = "asignaturalist";
+                break;
+            case "/misasignaturas":
+                //Primera consulta para buscar al alumno
+                Usuario user;
+                TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                qUsuario.setParameter("email", session.getAttribute("email"));
+                user = qUsuario.getSingleResult();
+
+                //Guardo IDS de asignatura en una list, compruebo si el usuario tiene asignaturas previamente
+                //PREGUNTAR SI ESTA BIEN
+                if (user.getUsuarioAsignaturas().size() == 0) {
+                    vista = "asignaturalist";
+                } else {
+                    List<Long> asignaturasId = new ArrayList<>();
+                    for (UsuarioAsignatura usuarioAsignatura : user.getUsuarioAsignaturas()) {
+                        asignaturasId.add(usuarioAsignatura.getId());
+                    }
+
+                    //Segunda consulta para buscar las asignaturad completas
+                    List<Asignatura> misAsignaturas;
+                    TypedQuery<Asignatura> qAsignaturas = em.createQuery("SELECT a FROM Asignatura a WHERE a.id IN :ids", Asignatura.class);
+                    qAsignaturas.setParameter("ids", asignaturasId);
+                    misAsignaturas = qAsignaturas.getResultList();
+                    request.setAttribute("asignaturas", misAsignaturas);
+                }
+                vista = "asignaturalist";
+                break;
+            case "/nuevaasignatura":
+                
+                vista = "asignaturacreate";
+                break;
+            default:
+                vista = "error";
+        }
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/" + vista + ".jsp");
+        rd.forward(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

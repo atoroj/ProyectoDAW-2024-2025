@@ -31,10 +31,17 @@
                 <li><a href="/universidad/contacto">Contacto</a></li>
                 <c:if test="${sessionScope.email != null}">
                     <li><a href="/universidad/user/listaralumnos">Listar alumnos</a></li>
-                    </c:if>
-                <c:if test="${sessionScope.email != null && sessionScope.rol == 'ADM'}">
-                <li><a href="/universidad/user/listarusuarios">Listar usuarios</a></li>
                 </c:if>
+                <c:if test="${sessionScope.email != null && sessionScope.rol == 'ADM'}">
+                    <li><a href="/universidad/user/listarusuarios">Listar usuarios</a></li>
+                </c:if>
+                <c:if test="${sessionScope.email != null && sessionScope.rol == 'ALU'}">
+                    <li><a href="/universidad/asignatura/misasignaturas">Mis asignaturas</a></li>
+                </c:if>
+                <c:if test="${sessionScope.email != null && sessionScope.rol == 'ADM'}">
+                    <li><a href="/universidad/asignatura/listarasignaturas">Listar asignaturas</a></li>
+                </c:if>
+                
                 
             </ul>
         </nav>

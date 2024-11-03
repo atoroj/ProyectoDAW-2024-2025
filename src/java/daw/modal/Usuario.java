@@ -2,6 +2,7 @@ package daw.modal;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +22,8 @@ import java.util.Set;
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
     @NamedQuery(name = "Usuario.findByEmailAndPass", query = "SELECT u FROM Usuario u WHERE u.email = :email AND u.pwd = :pwd"),
-    @NamedQuery(name = "Usuario.findByName", query = "SELECT u FROM Usuario u WHERE u.name =:name"),})
+    @NamedQuery(name = "Usuario.findByName", query = "SELECT u FROM Usuario u WHERE u.name =:name"),
+    @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email =:email")})
 public class Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -39,7 +41,7 @@ public class Usuario implements Serializable {
     String rol; //ALU | PROF | ADM
     int phone;
     
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
     Set<UsuarioAsignatura> usuarioAsignaturas;
 
     public Usuario() {
@@ -54,6 +56,8 @@ public class Usuario implements Serializable {
         this.rol = rol;
         this.phone = phone;
     }
+
+  
 
     public String getName() {
         return name;
@@ -109,6 +113,22 @@ public class Usuario implements Serializable {
 
     public void setRol(String rol) {
         this.rol = rol;
+    }
+    
+      public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public Set<UsuarioAsignatura> getUsuarioAsignaturas() {
+        return usuarioAsignaturas;
+    }
+
+    public void setUsuarioAsignaturas(Set<UsuarioAsignatura> usuarioAsignaturas) {
+        this.usuarioAsignaturas = usuarioAsignaturas;
     }
 
     @Override
