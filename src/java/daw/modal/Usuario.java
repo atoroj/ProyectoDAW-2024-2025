@@ -20,6 +20,7 @@ import java.util.Set;
 @Table(name = "usuarios")
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
+    @NamedQuery(name = "Usuario.findByEmailAndPass", query = "SELECT u FROM Usuario u WHERE u.email = :email AND u.pwd = :pwd"),
     @NamedQuery(name = "Usuario.findByName", query = "SELECT u FROM Usuario u WHERE u.name =:name"),})
 public class Usuario implements Serializable {
 
@@ -44,13 +45,14 @@ public class Usuario implements Serializable {
     public Usuario() {
     }
 
-    public Usuario(String name, String surname, String nif, String email, int phone, String rol) {
+    public Usuario(String email, String name, String surname, String pwd, String nif, String rol, int phone) {
+        this.email = email;
         this.name = name;
         this.surname = surname;
+        this.pwd = pwd;
         this.nif = nif;
-        this.email = email;
-        this.phone = phone;
         this.rol = rol;
+        this.phone = phone;
     }
 
     public String getName() {

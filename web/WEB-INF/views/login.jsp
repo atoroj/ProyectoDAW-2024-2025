@@ -13,9 +13,9 @@
     </head>
     <body>
         <h1>Introduce tus datos</h1>
-        <form action="/universidad/alumno" method="POST">
-            <label>Nombre</label>
-            <input id="name" type="text" name="name"/>
+        <form action="/universidad/login/check" method="POST">
+            <label>Email</label>
+            <input id="email" type="email" name="email"/>
             <label>Contraseña</label>
             <input id="password" type="password" name="password"/>
             </br>
