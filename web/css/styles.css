@@ -1,0 +1,88 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 4 nov 2024, 9:29:29
+    Author     : Antonio
+*/
+.header {
+    background-color: #003366; /* Color de fondo personalizado */
+    color: #ffffff;            /* Color de texto blanco */
+    text-align: center;
+    padding: 1.5rem 0;
+}
+/* Navbar */
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff;            /* Color de los enlaces del navbar */
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: #cccccc;            /* Color del enlace al pasar el ratón */
+}
+
+/* Bienvenida y Noticias */
+#bienvenida h2,
+#noticias h2 {
+    color: #003366;            /* Color de los títulos de sección */
+}
+
+#bienvenida p,
+#noticias p {
+    color: #333333;            /* Color del texto de los párrafos */
+}
+
+.card-title {
+    color: #003366;            /* Color del título de cada tarjeta */
+}
+
+.footer {
+    background-color: #222222; /* Color de fondo del pie de página */
+    color: #ffffff;            /* Color de texto del pie de página */
+    text-align: center;
+    padding: 1rem 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+.contenedor-perfil {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.perfil-detalles {
+    text-align: left;
+}
+.perfil-detalles h2 {
+    margin-bottom: 5px;
+}
+.perfil-detalles p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.editar-perfil btn {
+    margin: 5px;
+}
+
+.editar-perfil-display {
+    display: hidden;
+}

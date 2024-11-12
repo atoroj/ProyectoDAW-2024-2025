@@ -54,7 +54,9 @@ public class LoginController extends HttpServlet {
                 vista = "login";
                 break;
             case "/logout":
-                session.invalidate();
+                if (session != null) {
+                    session.invalidate();
+                }
                 response.sendRedirect("http://localhost:8080/universidad/main");
                 break;
             case "/error":
@@ -72,6 +74,7 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String accion = "";
+         String vista = "";
         if (request.getServletPath().equals("/login")) {
             if (request.getPathInfo() != null) {
                 accion = request.getPathInfo();
@@ -84,14 +87,14 @@ public class LoginController extends HttpServlet {
                 RequestDispatcher rd;
                 String email = request.getParameter("email");
                 String pwd = request.getParameter("password");
-                session = request.getSession();
+
                 try {
                     boolean usuarioValidado = validarUsuario(request, email, pwd);
-                    //PORQUE NO FUNCIONA CON REQUESTDISPATCHER
                     if (usuarioValidado) {
                         response.sendRedirect("http://localhost:8080/universidad/main");
                     } else {
-                        response.sendRedirect("http://localhost:8080/universidad/login/error");
+                        vista = "login";
+                        request.setAttribute("msg", "Email o contraseña incorrectos");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -99,9 +102,12 @@ public class LoginController extends HttpServlet {
 
                 break;
             default:
-                throw new AssertionError();
+                vista = "error";
         }
-
+        if (!vista.equals("")) {
+            RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/" + vista + ".jsp");
+            rd.forward(request, response);
+        }
     }
 
     private boolean validarUsuario(HttpServletRequest request, String email, String pwd) throws NoSuchAlgorithmException {
@@ -116,6 +122,7 @@ public class LoginController extends HttpServlet {
             q.setParameter("pwd", pwd);
             user = q.getSingleResult();
             if (user != null) {
+                session = request.getSession();
                 session.setAttribute("email", user.getEmail());
                 session.setAttribute("rol", user.getRol());
                 userValid = true;

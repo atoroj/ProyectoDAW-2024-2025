@@ -13,12 +13,15 @@ import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import jakarta.transaction.UserTransaction;
+import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -27,7 +30,8 @@ import java.util.logging.Level;
  *
  * @author Antonio
  */
-@WebServlet(name = "UsuarioController", urlPatterns = {"/main", "/user/*", "/adm/*", "/prof/*"})
+@MultipartConfig
+@WebServlet(name = "UsuarioController", urlPatterns = {"/main", "/user/*"})
 public class UsuarioController extends HttpServlet {
 
     @PersistenceContext(unitName = "UniversidadPU")
@@ -39,7 +43,7 @@ public class UsuarioController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String vista;
+        String vista = "";
         String accion = "/main";
         String tipo = request.getServletPath();
         session = request.getSession();
@@ -55,12 +59,16 @@ public class UsuarioController extends HttpServlet {
                 vista = "main";
                 break;
             case "/listaralumnos":
-                List<Usuario> alumList;
-                TypedQuery<Usuario> alums = em.createQuery("SELECT u FROM Usuario u WHERE u.rol = :rol", Usuario.class);
-                alums.setParameter("rol", "ALU");
-                alumList = alums.getResultList();
-                request.setAttribute("alumnos", alumList);
-                vista = "userlist";
+                if (session.getAttribute("email") != null) {
+                    List<Usuario> alumList;
+                    TypedQuery<Usuario> alums = em.createQuery("SELECT u FROM Usuario u WHERE u.rol = :rol", Usuario.class);
+                    alums.setParameter("rol", "ALU");
+                    alumList = alums.getResultList();
+                    request.setAttribute("alumnos", alumList);
+                    vista = "userlist";
+                } else {
+                    vista = "error";
+                }
                 break;
             case "/listarusuarios":
                 if (!session.getAttribute("rol").equals("ADM")) {
@@ -79,6 +87,22 @@ public class UsuarioController extends HttpServlet {
                 } else {
                     vista = "usercreate";
                 }
+                break;
+            case "/profile":
+                if (session.getAttribute("email") != null) {
+                    Usuario user;
+                    TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                    qUsuario.setParameter("email", session.getAttribute("email"));
+                    user = qUsuario.getSingleResult();
+                    request.setAttribute("usuario", user);
+                    vista = "profile";
+                } else {
+                    vista = "error";
+                }
+                break;
+            case "/editprofle":
+                Part imgPart = request.getPart("profileImg");
+                //String rutaImg = "img" + File.separator + "prfileimg" + File.separator + idUsuario + imgPart;
                 break;
             default:
                 vista = "error";
@@ -110,6 +134,23 @@ public class UsuarioController extends HttpServlet {
 
             }
         }
+    }
+
+    private String getFileName(Part part) {
+        String contentDisposition = part.getHeader("content-disposition");
+        String fileName = null;
+
+        for (String cd : contentDisposition.split(";")) {
+            if (cd.trim().startsWith("filename")) {
+                fileName = cd.substring(cd.indexOf('=') + 1).trim().replace("", "");
+                break;
+            }
+        }
+        if (fileName != null && fileName.contains(".")) {
+            fileName = fileName.substring(0, fileName.lastIndexOf('.'));
+        }
+
+        return fileName;
     }
 
     public void guardarUsuario(Usuario user) {

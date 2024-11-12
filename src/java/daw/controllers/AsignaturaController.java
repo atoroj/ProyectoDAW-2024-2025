@@ -58,40 +58,45 @@ public class AsignaturaController extends HttpServlet {
                 vista = "main";
                 break;
             case "/listarasignaturas":
-                List<Asignatura> asignaturaList;
-                TypedQuery<Asignatura> asignaturas = em.createNamedQuery("Asignatura.findAll", Asignatura.class);
-                asignaturaList = asignaturas.getResultList();
-                request.setAttribute("asignaturas", asignaturaList);
-                vista = "asignaturalist";
-                break;
-            case "/misasignaturas":
-                //Primera consulta para buscar al alumno
-                Usuario user;
-                TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
-                qUsuario.setParameter("email", session.getAttribute("email"));
-                user = qUsuario.getSingleResult();
-
-                //Guardo IDS de asignatura en una list, compruebo si el usuario tiene asignaturas previamente
-                //PREGUNTAR SI ESTA BIEN
-                if (user.getUsuarioAsignaturas().size() == 0) {
+                if (session.getAttribute("email") != null) {
+                    List<Asignatura> asignaturaList;
+                    TypedQuery<Asignatura> asignaturas = em.createNamedQuery("Asignatura.findAll", Asignatura.class);
+                    asignaturaList = asignaturas.getResultList();
+                    request.setAttribute("asignaturas", asignaturaList);
                     vista = "asignaturalist";
                 } else {
-                    List<Long> asignaturasId = new ArrayList<>();
-                    for (UsuarioAsignatura usuarioAsignatura : user.getUsuarioAsignaturas()) {
-                        asignaturasId.add(usuarioAsignatura.getId());
-                    }
-
-                    //Segunda consulta para buscar las asignaturad completas
-                    List<Asignatura> misAsignaturas;
-                    TypedQuery<Asignatura> qAsignaturas = em.createQuery("SELECT a FROM Asignatura a WHERE a.id IN :ids", Asignatura.class);
-                    qAsignaturas.setParameter("ids", asignaturasId);
-                    misAsignaturas = qAsignaturas.getResultList();
-                    request.setAttribute("asignaturas", misAsignaturas);
+                    vista = "error";
                 }
-                vista = "asignaturalist";
+                break;
+            case "/misasignaturas":
+                if (session.getAttribute("email") != null) {
+                    //Primera consulta para buscar al alumno
+                    Usuario user;
+                    TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                    qUsuario.setParameter("email", session.getAttribute("email"));
+                    user = qUsuario.getSingleResult();
+
+                    //Guardo IDS de asignatura en una list, compruebo si el usuario tiene asignaturas previamente
+                    if (user.getUsuarioAsignaturas().size() != 0) {
+                        List<Long> asignaturasId = new ArrayList<>();
+                        for (UsuarioAsignatura usuarioAsignatura : user.getUsuarioAsignaturas()) {
+                            asignaturasId.add(usuarioAsignatura.getId());
+                        }
+
+                        //Segunda consulta para buscar las asignaturad completas
+                        List<Asignatura> misAsignaturas;
+                        TypedQuery<Asignatura> qAsignaturas = em.createQuery("SELECT a FROM Asignatura a WHERE a.id IN :ids", Asignatura.class);
+                        qAsignaturas.setParameter("ids", asignaturasId);
+                        misAsignaturas = qAsignaturas.getResultList();
+                        request.setAttribute("asignaturas", misAsignaturas);
+                    }
+                    vista = "asignaturalist";
+                } else {
+                    vista = "error";
+                }
+
                 break;
             case "/nuevaasignatura":
-                
                 vista = "asignaturacreate";
                 break;
             default:

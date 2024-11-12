@@ -11,7 +11,10 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Lista de usuarios</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/ProyectoDAW/css/styles.css" rel="stylesheet" type="text/css">
     </head>
+    <%@include file="shared/header.jsp" %>
     <body>
         <h1>Alumnos</h1>
         <c:if test="${!empty requestScope.alumnos}">
@@ -37,4 +40,5 @@
             </table>
         </c:if>
     </body>
+    <%@include file="shared/footer.jsp" %>
 </html>
