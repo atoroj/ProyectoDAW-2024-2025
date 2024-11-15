@@ -38,6 +38,9 @@
                     <c:if test="${sessionScope.email != null && (sessionScope.rol == 'ADM' || sessionScope.rol == 'PROF')}">
                         <li class="nav-item"><a class="nav-link" href="/universidad/asignatura/nuevaasignatura">Crear asignatura</a></li>
                     </c:if>
+                    <c:if test="${sessionScope.email != null && sessionScope.rol == 'ALU'}">
+                        <li class="nav-item"><a class="nav-link" href="/universidad/asignatura/matricula">Matricula</a></li>
+                    </c:if>
                 </ul>
             </div>
         </div>

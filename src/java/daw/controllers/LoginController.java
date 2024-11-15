@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package daw.controllers;
 
 import daw.modal.Usuario;
@@ -12,7 +8,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author Antonio
  */
-@WebServlet(name = "LoginController", urlPatterns = {"/login/*", "/logout"})
+@WebServlet(name = "LoginController", urlPatterns = {"/login" , "/login/*", "/logout"})
 public class LoginController extends HttpServlet {
 
     @PersistenceContext(unitName = "UniversidadPU")
@@ -37,11 +32,9 @@ public class LoginController extends HttpServlet {
     private UserTransaction utx;
     MessageDigest md;
     HttpSession session;
-
     private static final Logger Log = Logger.getLogger(LoginController.class.getName());
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String vista = "";
         String accion = request.getServletPath();
         if (request.getServletPath().equals("/login")) {
@@ -59,8 +52,6 @@ public class LoginController extends HttpServlet {
                 }
                 response.sendRedirect("http://localhost:8080/universidad/main");
                 break;
-            case "/error":
-                vista = "error";
             default:
                 vista = "error";
         }

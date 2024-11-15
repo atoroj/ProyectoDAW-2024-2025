@@ -129,6 +129,7 @@ public class UsuarioController extends HttpServlet {
                 }
                 Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
                 guardarUsuario(user);
+                request.getSession().setAttribute("msg", "Usuario creado con exito");
                 response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
             } catch (Exception e) {
 
