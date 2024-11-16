@@ -78,7 +78,6 @@ public class LoginController extends HttpServlet {
                 RequestDispatcher rd;
                 String email = request.getParameter("email");
                 String pwd = request.getParameter("password");
-
                 try {
                     boolean usuarioValidado = validarUsuario(request, email, pwd);
                     if (usuarioValidado) {

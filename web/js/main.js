@@ -12,13 +12,25 @@ function editarPerfil() {
     document.getElementById("cancelarPerfil").style.display = "inline";
 }
 
-function anadirAsignatura(asignaturaId){
+function anadirAsignatura(asignaturaId) {
     fetch(`/universidad/asignatura/matricular?id=${asignaturaId}`, {
         method: 'POST'
     }).then(response => {
-        if(response.ok){
+        if (response.ok) {
             location.reload();
-        }else{
+        } else {
+            alert("Error al añadir la asignatura");
+        }
+    });
+}
+
+function eliminarAsignatura(asignaturaId) {
+    fetch(`/universidad/asignatura/desmatricular?id=${asignaturaId}`, {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
             alert("Error al añadir la asignatura");
         }
     });

@@ -36,6 +36,7 @@
                             <td>${misasignaturas.id}</td>
                             <td>${misasignaturas.codigo}</td>
                             <td>${misasignaturas.nombre}</td>
+                            <td><button onclick="eliminarAsignatura(${misasignaturas.id})">Eliminar</button></td>
                         </tr>
                     </c:forEach>
                 </table>
