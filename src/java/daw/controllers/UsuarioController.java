@@ -71,21 +71,21 @@ public class UsuarioController extends HttpServlet {
                 }
                 break;
             case "/listarusuarios":
-                if (!session.getAttribute("rol").equals("ADM")) {
-                    vista = "error";
-                } else {
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
                     List<Usuario> userList;
                     TypedQuery<Usuario> users = em.createNamedQuery("Usuario.findAll", Usuario.class);
                     userList = users.getResultList();
                     request.setAttribute("alumnos", userList);
                     vista = "userlist";
+                }else{
+                    vista = "error";
                 }
                 break;
             case "/nuevousuario":
-                if (!session.getAttribute("rol").equals("ADM")) {
-                    vista = "error";
-                } else {
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
                     vista = "usercreate";
+                } else {
+                    vista = "error";
                 }
                 break;
             case "/profile":
@@ -116,28 +116,32 @@ public class UsuarioController extends HttpServlet {
         String accion = request.getPathInfo();
         switch (accion) {
             case "/crearusuario":
-                String name = request.getParameter("name");
-                String surname = request.getParameter("surname");
-                String nif = request.getParameter("nif");
-                String email = request.getParameter("email");
-                int phone = Integer.valueOf(request.getParameter("phone"));
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                    String name = request.getParameter("name");
+                    String surname = request.getParameter("surname");
+                    String nif = request.getParameter("nif");
+                    String email = request.getParameter("email");
+                    int phone = Integer.valueOf(request.getParameter("phone"));
 
-                String pwd = request.getParameter("pwd");
-                String rol = request.getParameter("rol");
-                try {
-                    if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
-                        throw new NullPointerException();
+                    String pwd = request.getParameter("pwd");
+                    String rol = request.getParameter("rol");
+                    try {
+                        if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
+                            throw new NullPointerException();
+                        }
+                        Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
+                        guardarUsuario(user);
+                        request.getSession().setAttribute("msg", "Usuario creado con exito");
+                        response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
+                    } catch (Exception e) {
+
                     }
-                    Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
-                    guardarUsuario(user);
-                    request.getSession().setAttribute("msg", "Usuario creado con exito");
-                    response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
-                } catch (Exception e) {
-
+                } else {
+                    response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
                 break;
             case "/eliminar":
-                if (session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
                     try {
                         long usuarioId = Long.parseLong(request.getParameter("id"));
                         Usuario user;
@@ -157,7 +161,7 @@ public class UsuarioController extends HttpServlet {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         e.printStackTrace();
                     }
-                }else{
+                } else {
                     response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
 

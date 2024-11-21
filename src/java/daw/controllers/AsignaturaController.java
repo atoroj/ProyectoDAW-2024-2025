@@ -74,15 +74,15 @@ public class AsignaturaController extends HttpServlet {
                 }
                 break;
             case "/nuevaasignatura":
-                if(session.getAttribute("email") != null && (session.getAttribute("rol").equals("ADM") || session.getAttribute("rol").equals("PROF"))){
+                if (session.getAttribute("email") != null && (session.getAttribute("rol").equals("ADM") || session.getAttribute("rol").equals("PROF"))) {
                     vista = "asignaturacreate";
-                }else{
+                } else {
                     vista = "error";
                 }
-                
+
                 break;
             case "/matricula":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")){
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
                     request.setAttribute("misasignaturas", misAsignaturas(request));
                     request.setAttribute("misasignaturasnomatriculadas", misAsignaturasNoMatriculadas(request));
                     vista = "matriculacion";
@@ -103,29 +103,34 @@ public class AsignaturaController extends HttpServlet {
         String accion = request.getPathInfo();
         switch (accion) {
             case "/crearasignatura":
-                String codigo = request.getParameter("codigo");
-                String nombre = request.getParameter("nombre");
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                    String codigo = request.getParameter("codigo");
+                    String nombre = request.getParameter("nombre");
 
-                try {
-                    if (codigo.isEmpty() || nombre.isEmpty()) {
-                        throw new NullPointerException();
+                    try {
+                        if (codigo.isEmpty() || nombre.isEmpty()) {
+                            throw new NullPointerException();
+                        }
+                        Asignatura asignatura = new Asignatura(codigo, nombre);
+                        guardarAsignatura(asignatura);
+                        request.getSession().setAttribute("msg", "Asignatura creada con exito");
+                        response.sendRedirect("http://localhost:8080/universidad/asignatura/listarasignaturas");
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    Asignatura asignatura = new Asignatura(codigo, nombre);
-                    guardarAsignatura(asignatura);
-                    request.getSession().setAttribute("msg", "Asignatura creada con exito");
-                    response.sendRedirect("http://localhost:8080/universidad/asignatura/listarasignaturas");
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
+
                 break;
             case "/eliminar":
-                if (session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
                     try {
                         long asignaturaId = Long.parseLong(request.getParameter("id"));
                         Asignatura asign;
                         TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
                         qAsign.setParameter("id", asignaturaId);
-                        System.out.println("CONSULTA "+qAsign.toString());
+                        System.out.println("CONSULTA " + qAsign.toString());
                         asign = qAsign.getSingleResult();
                         utx.begin();
                         if (!em.contains(asign)) {
@@ -138,78 +143,84 @@ public class AsignaturaController extends HttpServlet {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         e.printStackTrace();
                     }
-                }else{
+                } else {
                     response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
                 break;
             case "/matricular":
-                try {
-                    long asignaturaId = Long.parseLong(request.getParameter("id"));
-                    //Recupero usuario
-                    Usuario user;
-                    TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
-                    qUser.setParameter("email", session.getAttribute("email"));
-                    user = qUser.getSingleResult();
-                    
-                    
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
+                    try {
+                        long asignaturaId = Long.parseLong(request.getParameter("id"));
+                        //Recupero usuario
+                        Usuario user;
+                        TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                        qUser.setParameter("email", session.getAttribute("email"));
+                        user = qUser.getSingleResult();
 
-                    //Recupero asignatura
-                    Asignatura asign;
-                    TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
-                    qAsign.setParameter("id", asignaturaId);
-                    asign = qAsign.getSingleResult();
+                        //Recupero asignatura
+                        Asignatura asign;
+                        TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
+                        qAsign.setParameter("id", asignaturaId);
+                        asign = qAsign.getSingleResult();
 
-                    UsuarioAsignatura userAsignatura = new UsuarioAsignatura(user, asign);
-                    
-                    user.getUsuarioAsignaturas().add(userAsignatura);
-                    
-                    utx.begin();
-                    em.merge(user);
-                    utx.commit();
-                    
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        UsuarioAsignatura userAsignatura = new UsuarioAsignatura(user, asign);
+
+                        user.getUsuarioAsignaturas().add(userAsignatura);
+
+                        utx.begin();
+                        em.merge(user);
+                        utx.commit();
+
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
 
                 break;
             case "/desmatricular":
-                try {
-                    long asignaturaId = Long.parseLong(request.getParameter("id"));
-                    //Recupero usuario
-                    Usuario user;
-                    TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
-                    qUser.setParameter("email", session.getAttribute("email"));
-                    user = qUser.getSingleResult();
+                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
+                    try {
+                        long asignaturaId = Long.parseLong(request.getParameter("id"));
+                        //Recupero usuario
+                        Usuario user;
+                        TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                        qUser.setParameter("email", session.getAttribute("email"));
+                        user = qUser.getSingleResult();
 
-                    //Recupero asignatura
-                    Asignatura asign;
-                    TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
-                    qAsign.setParameter("id", asignaturaId);
-                    asign = qAsign.getSingleResult();
+                        //Recupero asignatura
+                        Asignatura asign;
+                        TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
+                        qAsign.setParameter("id", asignaturaId);
+                        asign = qAsign.getSingleResult();
 
-                    UsuarioAsignatura userAsignatura;
-                    TypedQuery<UsuarioAsignatura> qUserAsign = em.createQuery("SELECT u FROM UsuarioAsignatura u WHERE u.usuario = :usuario AND u.asignatura = :asignatura", UsuarioAsignatura.class);
-                    qUserAsign.setParameter("usuario", user);
-                    qUserAsign.setParameter("asignatura", asign);
-                    userAsignatura = qUserAsign.getSingleResult();
-                    System.out.println("ASIGNATURA "+ userAsignatura);
-                    
-                    user.getUsuarioAsignaturas().remove(userAsignatura);
-                    
-                    utx.begin();
-                    em.merge(user);
-                    
-                    //Lo he visto en stackoverflow, hay que recuperar la entidad si no está vinculada, y se recupera asi
-                    if(!em.contains(userAsignatura)){
-                        userAsignatura = em.merge(userAsignatura);
+                        UsuarioAsignatura userAsignatura;
+                        TypedQuery<UsuarioAsignatura> qUserAsign = em.createQuery("SELECT u FROM UsuarioAsignatura u WHERE u.usuario = :usuario AND u.asignatura = :asignatura", UsuarioAsignatura.class);
+                        qUserAsign.setParameter("usuario", user);
+                        qUserAsign.setParameter("asignatura", asign);
+                        userAsignatura = qUserAsign.getSingleResult();
+                        System.out.println("ASIGNATURA " + userAsignatura);
+
+                        user.getUsuarioAsignaturas().remove(userAsignatura);
+
+                        utx.begin();
+                        em.merge(user);
+
+                        //Lo he visto en stackoverflow, hay que recuperar la entidad si no está vinculada, y se recupera asi
+                        if (!em.contains(userAsignatura)) {
+                            userAsignatura = em.merge(userAsignatura);
+                        }
+                        em.remove(userAsignatura);
+                        utx.commit();
+
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    em.remove(userAsignatura);
-                    utx.commit();
-                    
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                } else {
+                    response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
                 break;
             default:
@@ -241,7 +252,7 @@ public class AsignaturaController extends HttpServlet {
             for (UsuarioAsignatura usuarioAsignatura : user.getUsuarioAsignaturas()) {
                 asignaturasId.add(usuarioAsignatura.getAsignatura().getId());
             }
-            System.out.println("MIS ASIGNATURAS "+user.getUsuarioAsignaturas());
+            System.out.println("MIS ASIGNATURAS " + user.getUsuarioAsignaturas());
             //Segunda consulta para buscar las asignaturad completas
             TypedQuery<Asignatura> qAsignaturas = em.createQuery("SELECT a FROM Asignatura a WHERE a.id IN :ids", Asignatura.class);
             qAsignaturas.setParameter("ids", asignaturasId);
