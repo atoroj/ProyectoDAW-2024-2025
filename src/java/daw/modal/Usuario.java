@@ -23,6 +23,7 @@ import java.util.Set;
     @NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u"),
     @NamedQuery(name = "Usuario.findByEmailAndPass", query = "SELECT u FROM Usuario u WHERE u.email = :email AND u.pwd = :pwd"),
     @NamedQuery(name = "Usuario.findByName", query = "SELECT u FROM Usuario u WHERE u.name =:name"),
+    @NamedQuery(name = "Usuario.findById", query = "SELECT u FROM Usuario u WHERE u.id =:id"),
     @NamedQuery(name = "Usuario.findByEmail", query = "SELECT u FROM Usuario u WHERE u.email =:email")})
 public class Usuario implements Serializable {
 

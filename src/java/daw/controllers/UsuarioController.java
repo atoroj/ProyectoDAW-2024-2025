@@ -114,26 +114,56 @@ public class UsuarioController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accion = request.getPathInfo();
-        if (accion.equals("/crearusuario")) {
-            String name = request.getParameter("name");
-            String surname = request.getParameter("surname");
-            String nif = request.getParameter("nif");
-            String email = request.getParameter("email");
-            int phone = Integer.valueOf(request.getParameter("phone"));
+        switch (accion) {
+            case "/crearusuario":
+                String name = request.getParameter("name");
+                String surname = request.getParameter("surname");
+                String nif = request.getParameter("nif");
+                String email = request.getParameter("email");
+                int phone = Integer.valueOf(request.getParameter("phone"));
 
-            String pwd = request.getParameter("pwd");
-            String rol = request.getParameter("rol");
-            try {
-                if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
-                    throw new NullPointerException();
+                String pwd = request.getParameter("pwd");
+                String rol = request.getParameter("rol");
+                try {
+                    if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
+                        throw new NullPointerException();
+                    }
+                    Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
+                    guardarUsuario(user);
+                    request.getSession().setAttribute("msg", "Usuario creado con exito");
+                    response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
+                } catch (Exception e) {
+
                 }
-                Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
-                guardarUsuario(user);
-                request.getSession().setAttribute("msg", "Usuario creado con exito");
-                response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
-            } catch (Exception e) {
+                break;
+            case "/eliminar":
+                if (session.getAttribute("rol").equals("ADM")) {
+                    try {
+                        long usuarioId = Long.parseLong(request.getParameter("id"));
+                        Usuario user;
+                        TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
+                        qUser.setParameter("id", usuarioId);
+                        user = qUser.getSingleResult();
+                        utx.begin();
 
-            }
+                        if (!em.contains(user)) {
+                            user = em.merge(user);
+                        }
+
+                        em.remove(user);
+                        utx.commit();
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    } catch (Exception e) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        e.printStackTrace();
+                    }
+                }else{
+                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                }
+
+                break;
+            default:
+                throw new AssertionError();
         }
     }
 

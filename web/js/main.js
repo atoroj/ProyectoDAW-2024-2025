@@ -12,7 +12,7 @@ function editarPerfil() {
     document.getElementById("cancelarPerfil").style.display = "inline";
 }
 
-function anadirAsignatura(asignaturaId) {
+function anadirAsignaturaMatricula(asignaturaId) {
     fetch(`/universidad/asignatura/matricular?id=${asignaturaId}`, {
         method: 'POST'
     }).then(response => {
@@ -24,14 +24,38 @@ function anadirAsignatura(asignaturaId) {
     });
 }
 
-function eliminarAsignatura(asignaturaId) {
+function eliminarAsignaturaMatricula(asignaturaId) {
     fetch(`/universidad/asignatura/desmatricular?id=${asignaturaId}`, {
         method: 'POST'
     }).then(response => {
         if (response.ok) {
             location.reload();
         } else {
-            alert("Error al añadir la asignatura");
+            alert("Error al eliminar la asignatura");
+        }
+    });
+}
+
+function eliminarUsuario(usuarioId) {
+    fetch(`/universidad/user/eliminar?id=${usuarioId}`, {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert("Error al eliminar alumno");
+        }
+    });
+}
+
+function eliminarAsignatura(asignaturaId) {
+    fetch(`/universidad/asignatura/eliminar?id=${asignaturaId}`, {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert("Error al eliminar asignatura");
         }
     });
 }

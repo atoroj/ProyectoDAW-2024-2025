@@ -119,7 +119,28 @@ public class AsignaturaController extends HttpServlet {
                 }
                 break;
             case "/eliminar":
-
+                if (session.getAttribute("rol").equals("ADM")) {
+                    try {
+                        long asignaturaId = Long.parseLong(request.getParameter("id"));
+                        Asignatura asign;
+                        TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
+                        qAsign.setParameter("id", asignaturaId);
+                        System.out.println("CONSULTA "+qAsign.toString());
+                        asign = qAsign.getSingleResult();
+                        utx.begin();
+                        if (!em.contains(asign)) {
+                            asign = em.merge(asign);
+                        }
+                        em.remove(asign);
+                        utx.commit();
+                        response.setStatus(HttpServletResponse.SC_OK);
+                    } catch (Exception e) {
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                        e.printStackTrace();
+                    }
+                }else{
+                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                }
                 break;
             case "/matricular":
                 try {
