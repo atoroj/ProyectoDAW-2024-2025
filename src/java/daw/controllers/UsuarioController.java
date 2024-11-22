@@ -184,13 +184,12 @@ public class UsuarioController extends HttpServlet {
                     user.setNif(nif);
 
                     final Part imgPart = request.getPart("profileimg");
-                    if (imgPart != null) {
+                    if (imgPart !=  null || !imgPart.getSubmittedFileName().equals("")) {
                         String relativePath = "" + File.separator + "img";
                         String absolutePath = getServletContext().getRealPath(relativePath);
-                        String fileName = user.getId().toString();
-                        
+                        String fileName = user.getId().toString(); 
+                        System.out.println("COSA "+imgPart.getSubmittedFileName());
                         user.setRutaimg("/universidad" + File.separator + "img" + File.separator + fileName + ".jpg");
-                        
                         File f = new File(absolutePath + File.separator + fileName + ".jpg");
                         OutputStream fos = new FileOutputStream(f);
                         InputStream filecontent = imgPart.getInputStream();
@@ -204,7 +203,6 @@ public class UsuarioController extends HttpServlet {
                         filecontent.close();
                     }
                     utx.begin();
-                    System.out.println("USUARIO "+user.getRutaimg());
                     em.merge(user);
                     utx.commit();
                     response.sendRedirect("http://localhost:8080/universidad/user/profile");
