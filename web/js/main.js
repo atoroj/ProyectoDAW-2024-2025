@@ -7,6 +7,7 @@ function editarPerfil() {
     document.getElementById("email").disabled = false;
     document.getElementById("phone").disabled = false;
     document.getElementById("nif").disabled = false;
+    document.getElementById("profileimg").style.display = "inline";
     document.getElementById("editarPerfil").style.display = "none";
     document.getElementById("guardarPerfil").style.display = "inline";
     document.getElementById("cancelarPerfil").style.display = "inline";

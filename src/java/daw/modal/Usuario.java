@@ -40,6 +40,7 @@ public class Usuario implements Serializable {
     String pwd;
     String nif;
     String rol; //ALU | PROF | ADM
+    String rutaimg;
     int phone;
     
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
@@ -122,6 +123,14 @@ public class Usuario implements Serializable {
 
     public void setPwd(String pwd) {
         this.pwd = pwd;
+    }
+    
+    public String getRutaimg() {
+        return rutaimg;
+    }
+
+    public void setRutaimg(String rutaimg) {
+        this.rutaimg = rutaimg;
     }
 
     public Set<UsuarioAsignatura> getUsuarioAsignaturas() {

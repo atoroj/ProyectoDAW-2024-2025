@@ -28,6 +28,7 @@
             <table>
                 <tr>
                     <th>ID</th>
+                    <th>Imagen</th>
                     <th>Nombre</th>
                     <th>Apellidos</th>
                     <th>DNI</th>
@@ -38,6 +39,12 @@
                 <c:forEach var="alumnos" items="${requestScope.alumnos}">
                     <tr>
                         <td>${alumnos.id}</td>
+                        <c:if test="${!empty alumnos.rutaimg}">
+                            <td><img class="img-tabla" src="${alumnos.rutaimg}" alt="${alumnos.name}"></td>
+                        </c:if>
+                        <c:if test="${empty alumnos.rutaimg}">
+                            <td><img class="img-tabla" src="/universidad/img/default.jpg" alt="imgdefault"/></td>
+                        </c:if>
                         <td>${alumnos.name}</td>
                         <td>${alumnos.surname}</td>
                         <td>${alumnos.nif}</td>

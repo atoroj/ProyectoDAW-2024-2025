@@ -22,6 +22,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import jakarta.transaction.UserTransaction;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.logging.Level;
@@ -75,9 +78,10 @@ public class UsuarioController extends HttpServlet {
                     List<Usuario> userList;
                     TypedQuery<Usuario> users = em.createNamedQuery("Usuario.findAll", Usuario.class);
                     userList = users.getResultList();
+
                     request.setAttribute("alumnos", userList);
                     vista = "userlist";
-                }else{
+                } else {
                     vista = "error";
                 }
                 break;
@@ -99,10 +103,6 @@ public class UsuarioController extends HttpServlet {
                 } else {
                     vista = "error";
                 }
-                break;
-            case "/editprofle":
-                Part imgPart = request.getPart("profileImg");
-                //String rutaImg = "img" + File.separator + "prfileimg" + File.separator + idUsuario + imgPart;
                 break;
             default:
                 vista = "error";
@@ -165,6 +165,52 @@ public class UsuarioController extends HttpServlet {
                     response.sendRedirect("http://localhost:8080/universidad/user/error");
                 }
 
+                break;
+            case "/editprofile":
+                try {
+                    //NO FUNCIONA
+                    long usuarioId = Long.parseLong(request.getParameter("id"));
+                    Usuario user;
+                    TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
+                    qUser.setParameter("id", usuarioId);
+                    user = qUser.getSingleResult();
+                    
+                    String email = request.getParameter("email");
+                    int tlf = Integer.parseInt(request.getParameter("phone"));
+                    String nif = request.getParameter("nif");
+
+                    user.setEmail(email);
+                    user.setPhone(tlf);
+                    user.setNif(nif);
+
+                    final Part imgPart = request.getPart("profileimg");
+                    if (imgPart != null) {
+                        String relativePath = "" + File.separator + "img";
+                        String absolutePath = getServletContext().getRealPath(relativePath);
+                        String fileName = user.getId().toString();
+                        
+                        user.setRutaimg("/universidad" + File.separator + "img" + File.separator + fileName + ".jpg");
+                        
+                        File f = new File(absolutePath + File.separator + fileName + ".jpg");
+                        OutputStream fos = new FileOutputStream(f);
+                        InputStream filecontent = imgPart.getInputStream();
+                        int read = 0;
+                        final byte[] bytes = new byte[1024];
+                        while ((read = filecontent.read(bytes)) != -1) {
+                            fos.write(bytes, 0, read);
+                        }
+
+                        fos.close();
+                        filecontent.close();
+                    }
+                    utx.begin();
+                    System.out.println("USUARIO "+user.getRutaimg());
+                    em.merge(user);
+                    utx.commit();
+                    response.sendRedirect("http://localhost:8080/universidad/user/profile");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             default:
                 throw new AssertionError();
