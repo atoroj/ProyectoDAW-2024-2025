@@ -139,6 +139,7 @@ public class AsignaturaController extends HttpServlet {
                         em.remove(asign);
                         utx.commit();
                         response.setStatus(HttpServletResponse.SC_OK);
+                        session.setAttribute("msg", "Asignatura eliminada con éxito");
                     } catch (Exception e) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                         e.printStackTrace();
@@ -170,7 +171,7 @@ public class AsignaturaController extends HttpServlet {
                         utx.begin();
                         em.merge(user);
                         utx.commit();
-
+                        session.setAttribute("msg", "Asignatura matriculada con éxito");
                         response.setStatus(HttpServletResponse.SC_OK);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -214,7 +215,7 @@ public class AsignaturaController extends HttpServlet {
                         }
                         em.remove(userAsignatura);
                         utx.commit();
-
+                        session.setAttribute("msg", "Asignatura desmatriculada con éxito");
                         response.setStatus(HttpServletResponse.SC_OK);
                     } catch (Exception e) {
                         e.printStackTrace();

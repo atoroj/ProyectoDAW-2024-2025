@@ -19,6 +19,7 @@ function anadirAsignaturaMatricula(asignaturaId) {
     }).then(response => {
         if (response.ok) {
             location.reload();
+            
         } else {
             alert("Error al añadir la asignatura");
         }

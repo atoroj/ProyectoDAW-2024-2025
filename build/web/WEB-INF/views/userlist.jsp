@@ -22,8 +22,8 @@
             <div class="alert alert-success" role="alert">
                 ${sessionScope.msg}
             </div>
+            <c:remove var="msg" scope="session"/>
         </c:if>
-        <c:remove var="msg" scope="session"/>
         <c:if test="${!empty requestScope.alumnos}">
             <table>
                 <tr>

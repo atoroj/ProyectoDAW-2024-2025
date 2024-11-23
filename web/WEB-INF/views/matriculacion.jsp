@@ -17,10 +17,11 @@
     <%@include file="shared/header.jsp" %>
     <body>
         <h1>Crea o actualiza tu matricula</h1>
-        <c:if test="${!empty requestScope.msg}">
+        <c:if test="${!empty sessionScope.msg}">
             <div class="alert alert-success" role="alert">
-                ${requestScope.msg}
+                ${sessionScope.msg}
             </div>
+            <c:remove var="msg" scope="session" />
         </c:if>
         <div>
             <h2>Mis asignaturas</h2>

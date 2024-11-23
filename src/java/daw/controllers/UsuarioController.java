@@ -37,6 +37,7 @@ import java.util.logging.Level;
 @WebServlet(name = "UsuarioController", urlPatterns = {"/main", "/user/*"})
 public class UsuarioController extends HttpServlet {
 
+    LoginController lController = new LoginController();
     @PersistenceContext(unitName = "UniversidadPU")
     private EntityManager em;
     @Resource
@@ -117,15 +118,15 @@ public class UsuarioController extends HttpServlet {
         switch (accion) {
             case "/crearusuario":
                 if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
-                    String name = request.getParameter("name");
-                    String surname = request.getParameter("surname");
-                    String nif = request.getParameter("nif");
-                    String email = request.getParameter("email");
-                    int phone = Integer.valueOf(request.getParameter("phone"));
-
-                    String pwd = request.getParameter("pwd");
-                    String rol = request.getParameter("rol");
                     try {
+                        String name = request.getParameter("name");
+                        String surname = request.getParameter("surname");
+                        String nif = request.getParameter("nif");
+                        String email = request.getParameter("email");
+                        int phone = Integer.valueOf(request.getParameter("phone"));
+
+                        String pwd = lController.pwdMD5(request.getParameter("pwd"));
+                        String rol = request.getParameter("rol");
                         if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
                             throw new NullPointerException();
                         }
@@ -134,7 +135,7 @@ public class UsuarioController extends HttpServlet {
                         request.getSession().setAttribute("msg", "Usuario creado con exito");
                         response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
                 } else {
                     response.sendRedirect("http://localhost:8080/universidad/user/error");
@@ -156,6 +157,7 @@ public class UsuarioController extends HttpServlet {
 
                         em.remove(user);
                         utx.commit();
+                        session.setAttribute("msg", "Usuario eliminado con exito");
                         response.setStatus(HttpServletResponse.SC_OK);
                     } catch (Exception e) {
                         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -168,13 +170,12 @@ public class UsuarioController extends HttpServlet {
                 break;
             case "/editprofile":
                 try {
-                    //NO FUNCIONA
                     long usuarioId = Long.parseLong(request.getParameter("id"));
                     Usuario user;
                     TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
                     qUser.setParameter("id", usuarioId);
                     user = qUser.getSingleResult();
-                    
+
                     String email = request.getParameter("email");
                     int tlf = Integer.parseInt(request.getParameter("phone"));
                     String nif = request.getParameter("nif");
@@ -184,11 +185,11 @@ public class UsuarioController extends HttpServlet {
                     user.setNif(nif);
 
                     final Part imgPart = request.getPart("profileimg");
-                    if (imgPart !=  null || !imgPart.getSubmittedFileName().equals("")) {
+                    if (imgPart != null || !imgPart.getSubmittedFileName().equals("")) {
                         String relativePath = "" + File.separator + "img";
                         String absolutePath = getServletContext().getRealPath(relativePath);
-                        String fileName = user.getId().toString(); 
-                        System.out.println("COSA "+imgPart.getSubmittedFileName());
+                        String fileName = user.getId().toString();
+                        System.out.println("COSA " + imgPart.getSubmittedFileName());
                         user.setRutaimg("/universidad" + File.separator + "img" + File.separator + fileName + ".jpg");
                         File f = new File(absolutePath + File.separator + fileName + ".jpg");
                         OutputStream fos = new FileOutputStream(f);
@@ -202,9 +203,8 @@ public class UsuarioController extends HttpServlet {
                         fos.close();
                         filecontent.close();
                     }
-                    utx.begin();
-                    em.merge(user);
-                    utx.commit();
+                    guardarUsuario(user);
+                    session.setAttribute("msg", "Perfil actualizado con exito");
                     response.sendRedirect("http://localhost:8080/universidad/user/profile");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -232,11 +232,10 @@ public class UsuarioController extends HttpServlet {
         return fileName;
     }
 
-    public void guardarUsuario(Usuario user) {
+    private void guardarUsuario(Usuario user) {
         try {
             utx.begin();
-            //TODO MODIFICAR ALUMNO
-            em.persist(user);
+            em.merge(user);
             utx.commit();
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -16,9 +16,14 @@
     </head>
     <%@include file="shared/header.jsp" %>
     <body>
+
         <div class="contenedor-perfil">
-
-
+            <c:if test="${!empty sessionScope.msg}">
+                <div class="alert alert-success" role="alert">
+                    ${sessionScope.msg}
+                </div>
+                <c:remove var="msg" scope="session"/>
+            </c:if>
             <div class="perfil-detalles">
 
                 <form action="/universidad/user/editprofile" method="POST" enctype="multipart/form-data">

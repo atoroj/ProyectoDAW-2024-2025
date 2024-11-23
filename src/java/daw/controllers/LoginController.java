@@ -17,13 +17,14 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.UserTransaction;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
 import java.util.logging.Logger;
 
 /**
  *
  * @author Antonio
  */
-@WebServlet(name = "LoginController", urlPatterns = {"/login" , "/login/*", "/logout"})
+@WebServlet(name = "LoginController", urlPatterns = {"/login", "/login/*", "/logout"})
 public class LoginController extends HttpServlet {
 
     @PersistenceContext(unitName = "UniversidadPU")
@@ -65,7 +66,7 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String accion = "";
-         String vista = "";
+        String vista = "";
         if (request.getServletPath().equals("/login")) {
             if (request.getPathInfo() != null) {
                 accion = request.getPathInfo();
@@ -76,9 +77,9 @@ public class LoginController extends HttpServlet {
         switch (accion) {
             case "/check":
                 RequestDispatcher rd;
-                String email = request.getParameter("email");
-                String pwd = request.getParameter("password");
                 try {
+                    String email = request.getParameter("email");
+                    String pwd = pwdMD5(request.getParameter("password"));
                     boolean usuarioValidado = validarUsuario(request, email, pwd);
                     if (usuarioValidado) {
                         response.sendRedirect("http://localhost:8080/universidad/main");
@@ -100,11 +101,8 @@ public class LoginController extends HttpServlet {
         }
     }
 
-    private boolean validarUsuario(HttpServletRequest request, String email, String pwd) throws NoSuchAlgorithmException {
+    private boolean validarUsuario(HttpServletRequest request, String email, String pwd) {
         boolean userValid = false;
-
-        //TODO ENCRIPTAR CONTRASEÑA
-        md = MessageDigest.getInstance("MD5");
         Usuario user;
         try {
             TypedQuery<Usuario> q = em.createNamedQuery("Usuario.findByEmailAndPass", Usuario.class);
@@ -124,9 +122,14 @@ public class LoginController extends HttpServlet {
         return userValid;
     }
 
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
+    public String pwdMD5(String pwd) throws NoSuchAlgorithmException {
+        md = MessageDigest.getInstance("MD5");
+        byte[] hashBytes = md.digest(pwd.getBytes());
 
+        Formatter formatter = new Formatter();
+        for (byte b : hashBytes) {
+            formatter.format("%02x", b);
+        }
+        return formatter.toString();
+    }
 }
