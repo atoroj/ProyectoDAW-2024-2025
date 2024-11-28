@@ -5,6 +5,7 @@
 package daw.controllers;
 
 import daw.modal.Usuario;
+import daw.utilidad.Util;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -37,7 +38,6 @@ import java.util.logging.Level;
 @WebServlet(name = "UsuarioController", urlPatterns = {"/main", "/user/*"})
 public class UsuarioController extends HttpServlet {
 
-    LoginController lController = new LoginController();
     @PersistenceContext(unitName = "UniversidadPU")
     private EntityManager em;
     @Resource
@@ -125,7 +125,7 @@ public class UsuarioController extends HttpServlet {
                         String email = request.getParameter("email");
                         int phone = Integer.valueOf(request.getParameter("phone"));
 
-                        String pwd = lController.pwdMD5(request.getParameter("pwd"));
+                        String pwd = Util.pwdMD5(request.getParameter("pwd"));
                         String rol = request.getParameter("rol");
                         if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
                             throw new NullPointerException();

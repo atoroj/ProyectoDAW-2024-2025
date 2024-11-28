@@ -1,6 +1,7 @@
 package daw.controllers;
 
 import daw.modal.Usuario;
+import daw.utilidad.Util;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -31,7 +32,6 @@ public class LoginController extends HttpServlet {
     private EntityManager em;
     @Resource
     private UserTransaction utx;
-    MessageDigest md;
     HttpSession session;
     private static final Logger Log = Logger.getLogger(LoginController.class.getName());
 
@@ -79,7 +79,7 @@ public class LoginController extends HttpServlet {
                 RequestDispatcher rd;
                 try {
                     String email = request.getParameter("email");
-                    String pwd = pwdMD5(request.getParameter("password"));
+                    String pwd = Util.pwdMD5(request.getParameter("password"));
                     boolean usuarioValidado = validarUsuario(request, email, pwd);
                     if (usuarioValidado) {
                         response.sendRedirect("http://localhost:8080/universidad/main");
@@ -120,16 +120,5 @@ public class LoginController extends HttpServlet {
         }
 
         return userValid;
-    }
-
-    public String pwdMD5(String pwd) throws NoSuchAlgorithmException {
-        md = MessageDigest.getInstance("MD5");
-        byte[] hashBytes = md.digest(pwd.getBytes());
-
-        Formatter formatter = new Formatter();
-        for (byte b : hashBytes) {
-            formatter.format("%02x", b);
-        }
-        return formatter.toString();
     }
 }

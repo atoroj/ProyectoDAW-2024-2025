@@ -163,7 +163,7 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "daw.modal.Alumno[ id=" + id + " ]";
+        return "Alumno[" + id + " "+ name +" "+ surname +"]";
     }
 
 }

@@ -99,7 +99,7 @@ public class Asignatura implements Serializable {
 
     @Override
     public String toString() {
-        return "daw.modal.Asignatura[ id=" + id + " ]";
+        return "Asignatura[ " + id + " "+ codigo +" "+ nombre +" ]";
     }
 
 }
