@@ -20,17 +20,18 @@ import java.util.Set;
 @Table(name = "asignaturas")
 @NamedQueries({
     @NamedQuery(name = "Asignatura.findAll", query = "SELECT a FROM Asignatura a"),
-    @NamedQuery(name = "Asignatura.findById", query = "SELECT a FROM Asignatura a WHERE a.id =:id")})
+    @NamedQuery(name = "Asignatura.findById", query = "SELECT a FROM Asignatura a WHERE a.id =:id"),
+    @NamedQuery(name = "Asignatura.findByCodigo", query = "SELECT a FROM Asignatura a WHERE a.codigo =:codigo")})
 public class Asignatura implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(unique = true)
     String codigo;
-    
+
     String nombre;
 
     @OneToMany(mappedBy = "asignatura")
@@ -99,7 +100,7 @@ public class Asignatura implements Serializable {
 
     @Override
     public String toString() {
-        return "Asignatura[ " + id + " "+ codigo +" "+ nombre +" ]";
+        return "Asignatura[ " + id + " " + codigo + " " + nombre + " ]";
     }
 
 }

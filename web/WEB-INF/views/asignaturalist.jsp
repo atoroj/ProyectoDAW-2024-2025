@@ -37,6 +37,11 @@
                         <td>${asignaturas.id}</td>
                         <td>${asignaturas.codigo}</td>
                         <td>${asignaturas.nombre}</td>
+                        <c:if test="${sessionScope.rol == 'ALU'}">
+                            <td>
+                                
+                            </td>
+                        </c:if>
                         <c:if test="${sessionScope.rol == 'ADM'}">
                         <td>
                             <button type="button" class="btn btn-danger" onclick="eliminarAsignatura(${asignaturas.id})">

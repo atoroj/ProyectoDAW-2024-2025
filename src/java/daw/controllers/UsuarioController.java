@@ -4,7 +4,9 @@
  */
 package daw.controllers;
 
+import daw.modal.Asignatura;
 import daw.modal.Usuario;
+import daw.modal.UsuarioAsignatura;
 import daw.utilidad.Util;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
@@ -22,13 +24,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import jakarta.transaction.UserTransaction;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 /**
  *
@@ -95,15 +100,29 @@ public class UsuarioController extends HttpServlet {
                 break;
             case "/profile":
                 if (session.getAttribute("email") != null) {
-                    Usuario user;
                     TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
                     qUsuario.setParameter("email", session.getAttribute("email"));
-                    user = qUsuario.getSingleResult();
+                    Usuario user = qUsuario.getSingleResult();
                     request.setAttribute("usuario", user);
                     vista = "profile";
                 } else {
                     vista = "error";
                 }
+                break;
+            case "/asignatura":
+                long usuarioId = Long.parseLong(request.getParameter("id"));
+                TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findById", Usuario.class);
+                qUsuario.setParameter("id", usuarioId);
+                Usuario user = qUsuario.getSingleResult();
+
+                request.setAttribute("usuario", user);
+                //Para poder utilizar el index en JSTL con foreach tengo que pasarlo a List ya que Set no tiene indices
+                Set<UsuarioAsignatura> asignaturasSet = user.getUsuarioAsignaturas();
+                List<UsuarioAsignatura> usuarioAsignaturaList = new ArrayList<>(asignaturasSet);
+                request.setAttribute("usuarioasignatura", usuarioAsignaturaList);
+
+                request.setAttribute("misasignaturas", Util.misAsignaturas(em, session, user.getEmail()));
+                vista = "asignarnotas";
                 break;
             default:
                 vista = "error";
@@ -208,6 +227,50 @@ public class UsuarioController extends HttpServlet {
                     response.sendRedirect("http://localhost:8080/universidad/user/profile");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
+                }
+                break;
+            case "/nota":
+                try {
+                    //Busco el usuario
+                    long usuarioId = Long.parseLong(request.getParameter("userId"));
+                    Usuario user;
+                    TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
+                    qUser.setParameter("id", usuarioId);
+                    user = qUser.getSingleResult();
+
+                    Set<UsuarioAsignatura> userAsignaturas = new HashSet<>();
+                    int index = 0;
+
+                    while (request.getParameter("notas[" + index + "].codigo") != null) {
+                        String codigo = request.getParameter("notas[" + index + "].codigo");
+                        int nota = Integer.parseInt(request.getParameter("notas[" + index + "].nota"));
+                        String curso = "2024-2025";
+
+                        //Busco la asignatura
+                        Asignatura asign;
+                        TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findByCodigo", Asignatura.class);
+                        qAsign.setParameter("codigo", codigo);
+                        asign = qAsign.getSingleResult();
+                        
+                        //Busco la relacion usuario-asignatura
+                        UsuarioAsignatura uAsign;
+                        TypedQuery<UsuarioAsignatura> qUserAsign = em.createQuery("SELECT ua FROM UsuarioAsignatura ua WHERE ua.usuario = :user AND ua.asignatura =:asign", UsuarioAsignatura.class);
+                        qUserAsign.setParameter("user", user);
+                        qUserAsign.setParameter("asign", asign);
+                        uAsign = qUserAsign.getSingleResult();
+                        uAsign.setCurso(curso);
+                        uAsign.setNota(nota);
+                        
+                        utx.begin();
+                        em.merge(uAsign);
+                        utx.commit();
+                        index++;
+                    }
+
+                    response.setStatus(HttpServletResponse.SC_OK);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 }
                 break;
             default:

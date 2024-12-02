@@ -7,6 +7,7 @@ package daw.controllers;
 import daw.modal.Asignatura;
 import daw.modal.Usuario;
 import daw.modal.UsuarioAsignatura;
+import daw.utilidad.Util;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -67,7 +68,7 @@ public class AsignaturaController extends HttpServlet {
                 break;
             case "/misasignaturas":
                 if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
-                    request.setAttribute("asignaturas", misAsignaturas(request));
+                    request.setAttribute("asignaturas", Util.misAsignaturas(em, session, (String) session.getAttribute("email")));
                     vista = "asignaturalist";
                 } else {
                     vista = "error";
@@ -83,8 +84,8 @@ public class AsignaturaController extends HttpServlet {
                 break;
             case "/matricula":
                 if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
-                    request.setAttribute("misasignaturas", misAsignaturas(request));
-                    request.setAttribute("misasignaturasnomatriculadas", misAsignaturasNoMatriculadas(request));
+                    request.setAttribute("misasignaturas", Util.misAsignaturas(em, session, (String) session.getAttribute("email")));
+                    request.setAttribute("misasignaturasnomatriculadas", Util.misAsignaturasNoMatriculadas(em, session, (String) session.getAttribute("email")));
                     vista = "matriculacion";
                 } else {
                     vista = "error";
@@ -130,7 +131,6 @@ public class AsignaturaController extends HttpServlet {
                         Asignatura asign;
                         TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
                         qAsign.setParameter("id", asignaturaId);
-                        System.out.println("CONSULTA " + qAsign.toString());
                         asign = qAsign.getSingleResult();
                         utx.begin();
                         if (!em.contains(asign)) {
@@ -238,53 +238,4 @@ public class AsignaturaController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
-
-    private List<Asignatura> misAsignaturas(HttpServletRequest request) {
-        //Primera consulta para buscar al alumno
-        Usuario user;
-        List<Asignatura> misAsignaturas = new ArrayList<>();
-        TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
-        qUsuario.setParameter("email", session.getAttribute("email"));
-        user = qUsuario.getSingleResult();
-
-        //Guardo IDS de asignatura en una list, compruebo si el usuario tiene asignaturas previamente
-        if (user.getUsuarioAsignaturas().size() != 0) {
-            List<Long> asignaturasId = new ArrayList<>();
-            for (UsuarioAsignatura usuarioAsignatura : user.getUsuarioAsignaturas()) {
-                asignaturasId.add(usuarioAsignatura.getAsignatura().getId());
-            }
-            System.out.println("MIS ASIGNATURAS " + user.getUsuarioAsignaturas());
-            //Segunda consulta para buscar las asignaturad completas
-            TypedQuery<Asignatura> qAsignaturas = em.createQuery("SELECT a FROM Asignatura a WHERE a.id IN :ids", Asignatura.class);
-            qAsignaturas.setParameter("ids", asignaturasId);
-            misAsignaturas = qAsignaturas.getResultList();
-        }
-        return misAsignaturas;
-    }
-
-    private List<Asignatura> misAsignaturasNoMatriculadas(HttpServletRequest request) {
-        //Primera consulta para buscar al alumno
-        Usuario user;
-        TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
-        qUsuario.setParameter("email", session.getAttribute("email"));
-        user = qUsuario.getSingleResult();
-
-        //Guardo IDS de asignatura en una list, compruebo si el usuario tiene asignaturas previamente
-        List<Long> asignaturasId = new ArrayList<>();
-        if (!user.getUsuarioAsignaturas().isEmpty() || user.getUsuarioAsignaturas() != null) {
-            for (UsuarioAsignatura usuarioAsignatura : user.getUsuarioAsignaturas()) {
-                asignaturasId.add(usuarioAsignatura.getAsignatura().getId());
-            }
-        }
-        //Segunda consulta para buscar las asignaturad completas
-        TypedQuery<Asignatura> qAsignaturas;
-        if (asignaturasId.isEmpty()) {
-            qAsignaturas = em.createQuery("SELECT a FROM Asignatura a", Asignatura.class);
-        } else {
-            qAsignaturas = em.createQuery("SELECT a FROM Asignatura a WHERE a.id NOT IN :ids", Asignatura.class);
-            qAsignaturas.setParameter("ids", asignaturasId);
-        }
-        return qAsignaturas.getResultList();
-    }
-
 }

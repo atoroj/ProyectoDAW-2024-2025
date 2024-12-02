@@ -115,7 +115,7 @@ public class UsuarioAsignatura implements Serializable {
 
     @Override
     public String toString() {
-        return "daw.modal.AlumnoAsignatura[ id=" + id + " ]";
+        return "daw.modal.AlumnoAsignatura[ id=" + id + " Nota=" + nota + " Curso= "+ curso + "]";
     }
 
 }

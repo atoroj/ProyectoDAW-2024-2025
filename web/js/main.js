@@ -19,7 +19,7 @@ function anadirAsignaturaMatricula(asignaturaId) {
     }).then(response => {
         if (response.ok) {
             location.reload();
-            
+
         } else {
             alert("Error al añadir la asignatura");
         }
@@ -58,6 +58,30 @@ function eliminarAsignatura(asignaturaId) {
             location.reload();
         } else {
             alert("Error al eliminar asignatura");
+        }
+    });
+}
+
+function anadirNota(userId) {
+    const cuerpo = new URLSearchParams();
+    const filas = document.querySelectorAll('table tr');
+
+    filas.forEach((fila, index) => {
+        if (index === 0)
+            return; // Saltar el encabezado de la tabla
+        const codigo = fila.cells[0].innerText; // Código de la asignatura
+        const nota = fila.querySelector('input#nota').value; // Nota por cada fila
+        cuerpo.append(`notas[${index - 1}].codigo`, codigo);
+        cuerpo.append(`notas[${index - 1}].nota`, nota);
+    });
+        cuerpo.append("userId", userId);
+
+    fetch(`/universidad/user/nota`, {
+        method: 'POST',
+        body: cuerpo
+    }).then(response => {
+        if (response.ok) {
+            console.log("Exitoso");
         }
     });
 }
