@@ -52,7 +52,7 @@
             </select>
             <br><br>
             
-            <button type="submit">Crear Usuario</button>
+            <button class="btn btn-primary" type="submit">Crear Usuario</button>
         </form>
 
     </body>

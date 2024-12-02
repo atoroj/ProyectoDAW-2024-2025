@@ -26,7 +26,7 @@
         </c:if>
         <h2>${requestScope.usuario.name} ${requestScope.usuario.surname}</h2>
         <h3>${requestScope.usuario.nif}</h3>
-        <c:if test="${!empty requestScope.misasignaturas}">
+        <c:if test="${!empty requestScope.usuarioasignatura}">
             <table>
                 <tr>
                     <th>Codigo</th>
@@ -34,13 +34,12 @@
                     <th>Nota</th>
                 </tr>
 
-                <c:forEach var="misasignaturas" items="${requestScope.misasignaturas}" varStatus="status">
-                    <c:if test="${requestScope.usuarioasignatura[status.index].nota == '0'}">
+                <c:forEach var="usuarioasignatura" items="${requestScope.usuarioasignatura}">
+                    <c:if test="${usuarioasignatura.nota == '0'}">
                         <tr>
-                            <td>${misasignaturas.codigo}</td>
-                            <td>${misasignaturas.nombre}</td>
-                            <td><input type="text" id="nota" value="${requestScope.usuarioasignatura[status.index].nota}"/></td>
-                            <td>${requestScope.usuarioasignatura[status.index].asignatura.codigo}</td>
+                            <td>${usuarioasignatura.asignatura.codigo}</td>
+                            <td>${usuarioasignatura.asignatura.nombre}</td>
+                            <td><input type="text" id="nota" value="${usuarioasignatura.nota}"/></td>
                         </tr> 
                     </c:if>
                 </c:forEach>

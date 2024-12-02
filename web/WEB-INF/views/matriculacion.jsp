@@ -37,7 +37,7 @@
                             <td>${misasignaturas.id}</td>
                             <td>${misasignaturas.codigo}</td>
                             <td>${misasignaturas.nombre}</td>
-                            <td><button onclick="eliminarAsignaturaMatricula(${misasignaturas.id})">Eliminar</button></td>
+                            <td><button class="btn btn-danger" onclick="eliminarAsignaturaMatricula(${misasignaturas.id})">Eliminar</button></td>
                         </tr>
                     </c:forEach>
                 </table>
@@ -57,7 +57,7 @@
                             <td>${misasignaturasnomatriculadas.id}</td>
                             <td>${misasignaturasnomatriculadas.codigo}</td>
                             <td>${misasignaturasnomatriculadas.nombre}</td>
-                            <td><button onclick="anadirAsignaturaMatricula(${misasignaturasnomatriculadas.id})">Añadir</button></td>
+                            <td><button class="btn btn-success" onclick="anadirAsignaturaMatricula(${misasignaturasnomatriculadas.id})">Añadir</button></td>
                         </tr>
                     </c:forEach>
                 </table>

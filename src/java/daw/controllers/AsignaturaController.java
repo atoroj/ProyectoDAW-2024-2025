@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.UserTransaction;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -68,7 +69,16 @@ public class AsignaturaController extends HttpServlet {
                 break;
             case "/misasignaturas":
                 if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
-                    request.setAttribute("asignaturas", Util.misAsignaturas(em, session, (String) session.getAttribute("email")));
+                   
+                    Usuario user;
+                    TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                    qUser.setParameter("email", session.getAttribute("email"));
+                    user = qUser.getSingleResult();
+                    
+                    Set<UsuarioAsignatura> asignaturasSet = user.getUsuarioAsignaturas();
+                    List<UsuarioAsignatura> usuarioAsignaturaList = new ArrayList<>(asignaturasSet);
+                    
+                    request.setAttribute("asignaturas", usuarioAsignaturaList);
                     vista = "asignaturalist";
                 } else {
                     vista = "error";

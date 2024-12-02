@@ -120,8 +120,6 @@ public class UsuarioController extends HttpServlet {
                 Set<UsuarioAsignatura> asignaturasSet = user.getUsuarioAsignaturas();
                 List<UsuarioAsignatura> usuarioAsignaturaList = new ArrayList<>(asignaturasSet);
                 request.setAttribute("usuarioasignatura", usuarioAsignaturaList);
-
-                request.setAttribute("misasignaturas", Util.misAsignaturas(em, session, user.getEmail()));
                 vista = "asignarnotas";
                 break;
             default:
@@ -266,8 +264,9 @@ public class UsuarioController extends HttpServlet {
                         utx.commit();
                         index++;
                     }
-
                     response.setStatus(HttpServletResponse.SC_OK);
+                    session.setAttribute("msg", "Notas actualizadas con exito");
+                    response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
                 } catch (Exception e) {
                     e.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

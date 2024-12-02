@@ -25,7 +25,7 @@
             <c:remove var="msg" scope="session"/>
         </c:if>
         <c:if test="${!empty requestScope.alumnos}">
-            <table>
+            <table class="table">
                 <tr>
                     <th>ID</th>
                     <th>Imagen</th>

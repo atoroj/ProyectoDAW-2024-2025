@@ -28,7 +28,7 @@
                 <input type="text" id="nombre" name="nombre" required>
             </div>
             <div>
-                <button type="submit">Crear Asignatura</button>
+                <button class="btn btn-primary" type="submit">Crear Asignatura</button>
             </div>
         </form>
     </body>
