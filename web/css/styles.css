@@ -7,8 +7,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : Antonio
 */
 .header {
-    background-color: #2A3663; /* Color de fondo personalizado */
-    color: #ffffff;            /* Color de texto blanco */
+    background-color: #2A3663;
+    color: #ffffff;
     text-align: center;
     padding: 0.5rem 0;
 }
@@ -24,7 +24,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     padding-left: 6rem;
 }
 .encabezadoimg {
-    height: 70px; /* Tamaño más pequeño del logo */
+    height: 70px;
     width: auto;
     margin: 1rem 2rem 1rem 1rem;
 }
@@ -33,27 +33,27 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     margin: 2rem;
 }
 .navbar-dark .navbar-nav .nav-link:hover {
-    color: #ffffff;            /* Color del enlace al pasar el ratón */
+    color: #ffffff;            
 }
 
 /* Bienvenida y Noticias */
 #bienvenida h2,
 #noticias h2 {
-    color: #003366;            /* Color de los títulos de sección */
+    color: #003366;            
 }
 
 #bienvenida p,
 #noticias p {
-    color: #333333;            /* Color del texto de los párrafos */
+    color: #333333;            
 }
 
 .card-title {
-    color: #003366;            /* Color del título de cada tarjeta */
+    color: #003366;          
 }
 
 .footer {
-    background-color: #2A3663; /* Color de fondo del pie de página */
-    color: #ffffff;            /* Color de texto del pie de página */
+    background-color: #2A3663;
+    color: #ffffff;
     text-align: center;
     padding: 1rem 0;
     position: fixed;
@@ -87,12 +87,12 @@ body {
     object-fit: cover;
 }
 .img-tabla {
-    width: 100px; /* Ajusta el ancho de la imagen */
-    height: 100px; /* Ajusta la altura de la imagen */
-    object-fit: cover; /* Asegura que la imagen se ajuste sin deformarse */
-    border-radius: 4px; /* Opcional: añade bordes redondeados */
-    display: block; /* Asegura que la imagen sea un bloque en su celda */
-    margin: auto; /* Centra la imagen dentro de la celda */
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block; 
+    margin: auto; 
 }
 
 .titulostabla {
@@ -160,36 +160,36 @@ table tr:nth-child(even) {
 }
 
 .nombre-dni {
-    display: flex;               /* Usamos flexbox para alinear los elementos */
-    align-items: center;         /* Alinea los elementos verticalmente al centro */
-    justify-content: center;     /* Centra los elementos en el eje horizontal */
-    gap: 20px;                   /* Espaciado entre los elementos */
-    margin-bottom: 20px;         /* Espaciado en la parte inferior */
-    padding: 15px;               /* Relleno interno */
-    background-color: #f8f9fa;   /* Fondo claro para resaltar */
-    border-radius: 10px;         /* Bordes redondeados */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .nombre-dni img {
-    width: 120px;                 /* Ancho fijo para la imagen */
-    height: 120px;                /* Alto fijo para la imagen */
-    border-radius: 50%;          /* Bordes redondeados para hacerla circular */
-    object-fit: cover;           /* Ajusta la imagen para que no se deforme */
-    border: 1px solid #000000;   /* Bordes delgados y color azul */
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #000000;
 }
 
 .nombre-dni h2 {
-    font-size: 30px;             /* Tamaño de fuente adecuado */
-    font-weight: bold;           /* Negrita para los nombres */
-    color: #333;                 /* Color de texto oscuro */
-    margin: 0;                   /* Sin márgenes extra */
+    font-size: 30px;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
 }
 
 .nombre-dni h2:nth-child(2) {
-    font-size: 30px;             /* Un tamaño de fuente más pequeño para el NIF */
-    font-weight: normal;         /* Sin negrita para el NIF */
-    color: #555;                 /* Color de texto gris para el NIF */
+    font-size: 30px;
+    font-weight: normal;
+    color: #555;
 }
 
 
