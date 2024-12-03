@@ -17,8 +17,8 @@
     </head>
     <%@include file="shared/header.jsp" %>
     <body>
-        <h1>Crear Asignatura</h1>
-        <form action="/universidad/asignatura/crearasignatura" method="POST">
+        <h1 class="titulostabla">Crear Asignatura</h1>
+        <form class="formularios" action="/universidad/asignatura/crearasignatura" method="POST">
             <div>
                 <label for="codigo">Código de Asignatura</label>
                 <input type="text" id="codigo" name="codigo" required>
@@ -27,9 +27,7 @@
                 <label for="nombre">Nombre de Asignatura</label>
                 <input type="text" id="nombre" name="nombre" required>
             </div>
-            <div>
-                <button class="btn btn-primary" type="submit">Crear Asignatura</button>
-            </div>
+            <button class="btn btn-primary" type="submit">Crear asignatura</button>
         </form>
     </body>
     <%@include file="shared/footer.jsp" %>

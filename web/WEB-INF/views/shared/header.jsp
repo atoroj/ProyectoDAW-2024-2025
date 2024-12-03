@@ -1,11 +1,17 @@
 <header class="header">
-    <h1 href="/universidad/main">Universidad de Tavizna</h1>
-    <c:if test="${sessionScope.email == null}">
-        <a href="/universidad/login" class="btn btn-light">Iniciar sesión</a>
-    </c:if>
-    <c:if test="${sessionScope.email != null}">
-        <a href="/universidad/logout" class="btn btn-light">Cerrar sesión</a>
-    </c:if>
+    <div class="encabezado">
+        <div class="logonombre">
+            <a href="/universidad/main"><img class="encabezadoimg" src="/universidad/img/logo.png"/></a>
+            <h1 href="/universidad/main">Universidad de Tavizna</h1>
+        </div>
+        <c:if test="${sessionScope.email == null && sessionScope.rol == null}">
+            <a href="/universidad/login" class="btn btn-light encabezadobtn">Iniciar sesión</a>
+        </c:if>
+        <c:if test="${sessionScope.email != null && sessionScope.rol != null}">
+            <a href="/universidad/logout" class="btn btn-danger encabezadobtn">Cerrar sesión</a>
+        </c:if>
+        <c:if test="${sessionScope.email != null && sessionScope.rol != null}">
+    </div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,10 +19,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <!-- <li class="nav-item"><a class="nav-link" href="/universidad/sobre-nosotros">Sobre Nosotros</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/universidad/carreras">Carreras</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/universidad/admisiones">Admisiones</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/universidad/contacto">Contacto</a></li> -->
                     <c:if test="${sessionScope.email != null}">
                         <li class="nav-item"><a class="nav-link" href="/universidad/user/listaralumnos">Alumnos</a></li>
                     </c:if>
@@ -45,4 +47,5 @@
             </div>
         </div>
     </nav>
+</c:if>
 </header>

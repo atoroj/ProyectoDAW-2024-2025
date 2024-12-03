@@ -7,7 +7,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Login Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/universidad/css/styles.css" rel="stylesheet" type="text/css">
+        <script src="/universidad/js/main.js"></script>
     </head>
+    <%@include file="shared/header.jsp" %>
     <body class="bg-light">
 
         <div class="container d-flex align-items-center justify-content-center vh-100">
@@ -36,4 +39,5 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
+    <%@include file="shared/footer.jsp" %>
 </html>

@@ -7,18 +7,33 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     Author     : Antonio
 */
 .header {
-    background-color: #003366; /* Color de fondo personalizado */
+    background-color: #2A3663; /* Color de fondo personalizado */
     color: #ffffff;            /* Color de texto blanco */
     text-align: center;
-    padding: 1.5rem 0;
+    padding: 0.5rem 0;
 }
-/* Navbar */
-.navbar-dark .navbar-nav .nav-link {
-    color: #ffffff;            /* Color de los enlaces del navbar */
+.encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
+.logonombre {
+    display: flex;
+    align-items: center;
+    padding-left: 6rem;
+}
+.encabezadoimg {
+    height: 70px; /* Tamaño más pequeño del logo */
+    width: auto;
+    margin: 1rem 2rem 1rem 1rem;
+}
+
+.encabezadobtn{
+    margin: 2rem;
+}
 .navbar-dark .navbar-nav .nav-link:hover {
-    color: #cccccc;            /* Color del enlace al pasar el ratón */
+    color: #ffffff;            /* Color del enlace al pasar el ratón */
 }
 
 /* Bienvenida y Noticias */
@@ -37,27 +52,31 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
 }
 
 .footer {
-    background-color: #222222; /* Color de fondo del pie de página */
+    background-color: #2A3663; /* Color de fondo del pie de página */
     color: #ffffff;            /* Color de texto del pie de página */
     text-align: center;
     padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }
 
 body {
     font-family: Arial, sans-serif;
 }
 .contenedor-perfil {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ddd;
+    max-width: 40%;
+    margin: 3rem auto;
+    padding: 2rem;
+    border: 1.5px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 .profile-picture {
-    width: 150px;
-    height: 150px;
+    margin: auto;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 15px;
@@ -67,26 +86,6 @@ body {
     height: 100%;
     object-fit: cover;
 }
-.perfil-detalles {
-    text-align: left;
-}
-.perfil-detalles h2 {
-    margin-bottom: 5px;
-}
-.perfil-detalles p {
-    margin: 5px 0;
-    font-size: 14px;
-    color: #555;
-}
-
-.editar-perfil btn {
-    margin: 5px;
-}
-
-.editar-perfil-display {
-    display: hidden;
-}
-
 .img-tabla {
     width: 100px; /* Ajusta el ancho de la imagen */
     height: 100px; /* Ajusta la altura de la imagen */
@@ -95,3 +94,102 @@ body {
     display: block; /* Asegura que la imagen sea un bloque en su celda */
     margin: auto; /* Centra la imagen dentro de la celda */
 }
+
+.titulostabla {
+    color: #2A3663;
+    text-align: center;
+    padding: 1rem 0 2rem 0;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 1rem;
+    text-align: center;
+}
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    background-color: #2A3663;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.inputs-perfil{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.inputs-perfil label {
+    display: flex;
+    flex-direction: column;
+}
+
+.formularios {
+    width: 100%;
+    max-width: 60%; 
+    margin: 0 auto; 
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Espacio entre columnas */
+}
+.formularios div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    flex: 1;
+}
+.formularios label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.nombre-dni {
+    display: flex;               /* Usamos flexbox para alinear los elementos */
+    align-items: center;         /* Alinea los elementos verticalmente al centro */
+    justify-content: center;     /* Centra los elementos en el eje horizontal */
+    gap: 20px;                   /* Espaciado entre los elementos */
+    margin-bottom: 20px;         /* Espaciado en la parte inferior */
+    padding: 15px;               /* Relleno interno */
+    background-color: #f8f9fa;   /* Fondo claro para resaltar */
+    border-radius: 10px;         /* Bordes redondeados */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.nombre-dni img {
+    width: 120px;                 /* Ancho fijo para la imagen */
+    height: 120px;                /* Alto fijo para la imagen */
+    border-radius: 50%;          /* Bordes redondeados para hacerla circular */
+    object-fit: cover;           /* Ajusta la imagen para que no se deforme */
+    border: 1px solid #000000;   /* Bordes delgados y color azul */
+}
+
+.nombre-dni h2 {
+    font-size: 30px;             /* Tamaño de fuente adecuado */
+    font-weight: bold;           /* Negrita para los nombres */
+    color: #333;                 /* Color de texto oscuro */
+    margin: 0;                   /* Sin márgenes extra */
+}
+
+.nombre-dni h2:nth-child(2) {
+    font-size: 30px;             /* Un tamaño de fuente más pequeño para el NIF */
+    font-weight: normal;         /* Sin negrita para el NIF */
+    color: #555;                 /* Color de texto gris para el NIF */
+}
+
+

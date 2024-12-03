@@ -11,8 +11,7 @@
     </head>
     <%@ include file="shared/header.jsp" %>
     <body>
-        <h1>Asignatura</h1>
-
+        <h1 class="titulostabla">Asignatura</h1>
         <c:if test="${!empty sessionScope.msg}">
             <div class="alert alert-success" role="alert">
                 ${sessionScope.msg}
@@ -21,16 +20,18 @@
         </c:if>
 
         <c:if test="${!empty requestScope.asignaturas}">
-            <table class="table">
+            <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Codigo</th>
                         <th>Nombre</th>
-                        <c:if test="${sessionScope.rol == 'ALU'}">
+                            <c:if test="${sessionScope.rol == 'ALU'}">
                             <th>Nota</th>
-                        </c:if>
-                        
+                            </c:if>
+                            <c:if test="${sessionScope.rol == 'ADM'}">
+                            <th></th>
+                            </c:if>
                     </tr>
                 </thead>
                 <tbody>

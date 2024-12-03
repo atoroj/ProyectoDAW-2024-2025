@@ -17,34 +17,39 @@
     <body>
         <%@include file="shared/header.jsp" %>
 
-        <h1>Asignar notas</h1>
+        <h1 class="titulostabla">Asignar notas</h1>
         <c:if test="${!empty sessionScope.msg}">
             <div class="alert alert-success" role="alert">
                 ${sessionScope.msg}
             </div>
             <c:remove var="msg" scope="session"/>
         </c:if>
-        <h2>${requestScope.usuario.name} ${requestScope.usuario.surname}</h2>
-        <h3>${requestScope.usuario.nif}</h3>
+        <div class="nombre-dni">
+            <img src="${requestScope.usuario.rutaimg}" alt="${requestScope.usuario.name}"/>
+            <h2>${requestScope.usuario.name} ${requestScope.usuario.surname} -</h2>
+            <h2>${requestScope.usuario.nif}</h2>
+        </div>
         <c:if test="${!empty requestScope.usuarioasignatura}">
-            <table>
-                <tr>
-                    <th>Codigo</th>
-                    <th>Asignatura</th>
-                    <th>Nota</th>
-                </tr>
+            <c:forEach var="usuarioasignatura" items="${requestScope.usuarioasignatura}">
+                <c:if test="${usuarioasignatura.nota == '0'}">
+                    <table>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Asignatura</th>
+                            <th>Nota</th>
+                        </tr>
 
-                <c:forEach var="usuarioasignatura" items="${requestScope.usuarioasignatura}">
-                    <c:if test="${usuarioasignatura.nota == '0'}">
+
                         <tr>
                             <td>${usuarioasignatura.asignatura.codigo}</td>
                             <td>${usuarioasignatura.asignatura.nombre}</td>
-                            <td><input type="text" id="nota" value="${usuarioasignatura.nota}"/></td>
+                            <td><input class="form-control" type="text" id="nota" value="${usuarioasignatura.nota}"/></td>
                         </tr> 
-                    </c:if>
-                </c:forEach>
-            </table>
-            <button onclick="anadirNota(${requestScope.usuario.id})">Asignar notas</button>
+                        <
+                    </table>
+                    <button class="btn btn-primary" onclick="anadirNota(${requestScope.usuario.id})">Asignar notas</button>
+                </c:if>
+            </c:forEach>
         </c:if>
         <%@include file="shared/footer.jsp" %>
     </body>

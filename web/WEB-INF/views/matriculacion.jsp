@@ -16,7 +16,6 @@
     </head>
     <%@include file="shared/header.jsp" %>
     <body>
-        <h1>Crea o actualiza tu matricula</h1>
         <c:if test="${!empty sessionScope.msg}">
             <div class="alert alert-success" role="alert">
                 ${sessionScope.msg}
@@ -24,13 +23,14 @@
             <c:remove var="msg" scope="session" />
         </c:if>
         <div>
-            <h2>Mis asignaturas</h2>
+            <h2 class="titulostabla">Mis asignaturas</h2>
             <c:if test="${!empty requestScope.misasignaturas}">
                 <table>
                     <tr>
                         <th>ID</th>
                         <th>Codigo</th>
                         <th>Nombre</th>
+                        <th></th>
                     </tr>
                     <c:forEach var="misasignaturas" items="${requestScope.misasignaturas}">
                         <tr>
@@ -44,13 +44,14 @@
             </c:if>
         </div>
         <div>
-            <h2>Asignaturas no matriculadas</h2>
+            <h2 class="titulostabla">Asignaturas no matriculadas</h2>
             <c:if test="${!empty requestScope.misasignaturasnomatriculadas}">
                 <table>
                     <tr>
                         <th>ID</th>
                         <th>Codigo</th>
                         <th>Nombre</th>
+                        <th></th>
                     </tr>
                     <c:forEach var="misasignaturasnomatriculadas" items="${requestScope.misasignaturasnomatriculadas}">
                         <tr>
