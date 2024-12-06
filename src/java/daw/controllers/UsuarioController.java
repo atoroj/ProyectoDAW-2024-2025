@@ -150,12 +150,12 @@ public class UsuarioController extends HttpServlet {
                         Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
                         guardarUsuario(user);
                         request.getSession().setAttribute("msg", "Usuario creado con exito");
-                        response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
+                        response.sendRedirect("/universidad/user/listaralumnos");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                    response.sendRedirect("/universidad/user/error");
                 }
                 break;
             case "/eliminar":
@@ -181,7 +181,7 @@ public class UsuarioController extends HttpServlet {
                         e.printStackTrace();
                     }
                 } else {
-                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                    response.sendRedirect("/universidad/user/error");
                 }
 
                 break;
@@ -222,7 +222,7 @@ public class UsuarioController extends HttpServlet {
                     }
                     guardarUsuario(user);
                     session.setAttribute("msg", "Perfil actualizado con exito");
-                    response.sendRedirect("http://localhost:8080/universidad/user/profile");
+                    response.sendRedirect("/universidad/user/profile");
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -266,7 +266,7 @@ public class UsuarioController extends HttpServlet {
                     }
                     response.setStatus(HttpServletResponse.SC_OK);
                     session.setAttribute("msg", "Notas actualizadas con exito");
-                    response.sendRedirect("http://localhost:8080/universidad/user/listaralumnos");
+                    response.sendRedirect("/universidad/user/listaralumnos");
                 } catch (Exception e) {
                     e.printStackTrace();
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

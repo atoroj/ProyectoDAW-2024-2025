@@ -11,8 +11,7 @@
         <script src="/universidad/js/main.js"></script>
     </head>
     <%@include file="shared/header.jsp" %>
-    <body class="bg-light">
-
+    <body>
         <div class="container d-flex align-items-center justify-content-center vh-100">
             <div class="card p-4 shadow-sm" style="max-width: 400px; width: 100%;">
                 <c:if test="${!empty requestScope.msg}">

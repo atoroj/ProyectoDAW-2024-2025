@@ -17,7 +17,7 @@
     <%@include file="shared/header.jsp" %>
     <body>
 
-        <h1 class="titulostabla">Formulario de Creación de Usuario</h1>
+        <h1 class="titulostabla">Crear Usuario</h1>
 
         <form action="/universidad/user/crearusuario" method="post" class="formularios">
             <div>

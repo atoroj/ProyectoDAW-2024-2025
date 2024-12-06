@@ -26,12 +26,13 @@
                         <th>ID</th>
                         <th>Codigo</th>
                         <th>Nombre</th>
-                            <c:if test="${sessionScope.rol == 'ALU'}">
+                        <c:if test="${sessionScope.rol == 'ALU'}">
+                            <th>Favoritas</th>
                             <th>Nota</th>
-                            </c:if>
-                            <c:if test="${sessionScope.rol == 'ADM'}">
+                        </c:if>
+                        <c:if test="${sessionScope.rol == 'ADM'}">
                             <th></th>
-                            </c:if>
+                        </c:if>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,6 +43,10 @@
                                     <td>${asignaturas.asignatura.id}</td>
                                     <td>${asignaturas.asignatura.codigo}</td>
                                     <td>${asignaturas.asignatura.nombre}</td>
+                                    <td>
+                                        <input type="checkbox" id="fav" name="fav" value="${asignaturas.id}" onclick="anadirFav(${asignaturas.id})"
+                                        <c:if test="${sessionScope.favoritos != null && sessionScope.favoritos.contains(asignaturas.asignatura)}">checked</c:if>/>
+                                    </td>
                                     <td>
                                         <c:if test="${!empty asignaturas.nota}">
                                             ${asignaturas.nota}

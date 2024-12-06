@@ -69,15 +69,15 @@ public class AsignaturaController extends HttpServlet {
                 break;
             case "/misasignaturas":
                 if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
-                   
+
                     Usuario user;
                     TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
                     qUser.setParameter("email", session.getAttribute("email"));
                     user = qUser.getSingleResult();
-                    
+
                     Set<UsuarioAsignatura> asignaturasSet = user.getUsuarioAsignaturas();
                     List<UsuarioAsignatura> usuarioAsignaturaList = new ArrayList<>(asignaturasSet);
-                    
+
                     request.setAttribute("asignaturas", usuarioAsignaturaList);
                     vista = "asignaturalist";
                 } else {
@@ -125,12 +125,12 @@ public class AsignaturaController extends HttpServlet {
                         Asignatura asignatura = new Asignatura(codigo, nombre);
                         guardarAsignatura(asignatura);
                         request.getSession().setAttribute("msg", "Asignatura creada con exito");
-                        response.sendRedirect("http://localhost:8080/universidad/asignatura/listarasignaturas");
+                        response.sendRedirect("/asignatura/listarasignaturas");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 } else {
-                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                    response.sendRedirect("/universidad/user/error");
                 }
 
                 break;
@@ -155,7 +155,7 @@ public class AsignaturaController extends HttpServlet {
                         e.printStackTrace();
                     }
                 } else {
-                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                    response.sendRedirect("/universidad/user/error");
                 }
                 break;
             case "/matricular":
@@ -187,7 +187,7 @@ public class AsignaturaController extends HttpServlet {
                         e.printStackTrace();
                     }
                 } else {
-                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                    response.sendRedirect("/universidad/user/error");
                 }
 
                 break;
@@ -231,8 +231,30 @@ public class AsignaturaController extends HttpServlet {
                         e.printStackTrace();
                     }
                 } else {
-                    response.sendRedirect("http://localhost:8080/universidad/user/error");
+                    response.sendRedirect("/universidad/user/error");
                 }
+                break;
+            case "/anadirfav":
+                long asignaturaId = Long.parseLong(request.getParameter("id"));
+                
+                Asignatura asign;
+                TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
+                qAsign.setParameter("id", asignaturaId);
+                asign = qAsign.getSingleResult();
+                
+                List<Asignatura> favoritos = (List<Asignatura>) session.getAttribute("favoritos");
+                if (favoritos == null) {
+                    favoritos = new ArrayList<>();
+                }
+                if(!favoritos.contains(asign)){
+                    favoritos.add(asign);
+                }else{
+                    favoritos.remove(asign);
+                }
+                
+                session.setAttribute("favoritos", favoritos);
+                System.out.println("PRUEBA " + session.getAttribute("favoritos"));
+                response.setStatus(HttpServletResponse.SC_OK);
                 break;
             default:
                 throw new AssertionError();

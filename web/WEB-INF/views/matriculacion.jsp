@@ -30,6 +30,7 @@
                         <th>ID</th>
                         <th>Codigo</th>
                         <th>Nombre</th>
+                        <th>Favoritas</th>
                         <th></th>
                     </tr>
                     <c:forEach var="misasignaturas" items="${requestScope.misasignaturas}">
@@ -37,6 +38,10 @@
                             <td>${misasignaturas.id}</td>
                             <td>${misasignaturas.codigo}</td>
                             <td>${misasignaturas.nombre}</td>
+                            <td>
+                                <input type="checkbox" id="fav" name="fav" value="${misasignaturas.id}" onclick="anadirFav(${misasignaturas.id})"
+                                <c:if test="${sessionScope.favoritos != null && sessionScope.favoritos.contains(misasignaturas)}">checked</c:if>/>
+                            </td>
                             <td><button class="btn btn-danger" onclick="eliminarAsignaturaMatricula(${misasignaturas.id})">Eliminar</button></td>
                         </tr>
                     </c:forEach>

@@ -85,3 +85,17 @@ function anadirNota(userId) {
         }
     });
 }
+
+function anadirFav(asignaturaId){
+    const checkbox = document.querySelector(`#fav[value="${asignaturaId}"]`);
+    const isChecked = checkbox.checked;
+    fetch(`/universidad/asignatura/anadirfav?id=${asignaturaId}`, {
+        method: 'POST'
+    }).then(response => {
+        if (response.ok) {
+            console.log("Perfecto");
+        } else {
+            alert("Error al eliminar asignatura");
+        }
+    });
+}

@@ -51,7 +51,7 @@ public class LoginController extends HttpServlet {
                 if (session != null) {
                     session.invalidate();
                 }
-                response.sendRedirect("http://localhost:8080/universidad/main");
+                response.sendRedirect("/universidad/main");
                 break;
             default:
                 vista = "error";
@@ -82,7 +82,7 @@ public class LoginController extends HttpServlet {
                     String pwd = Util.pwdMD5(request.getParameter("password"));
                     boolean usuarioValidado = validarUsuario(request, email, pwd);
                     if (usuarioValidado) {
-                        response.sendRedirect("http://localhost:8080/universidad/main");
+                        response.sendRedirect("/universidad/main");
                     } else {
                         vista = "login";
                         request.setAttribute("msg", "Email o contraseña incorrectos");

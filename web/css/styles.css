@@ -56,9 +56,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     color: #ffffff;
     text-align: center;
     padding: 1rem 0;
-    position: fixed;
     bottom: 0;
     width: 100%;
+    margin-top: 1rem;
 }
 
 body {
@@ -98,7 +98,7 @@ body {
 .titulostabla {
     color: #2A3663;
     text-align: center;
-    padding: 1rem 0 2rem 0;
+    padding: 1rem 0 1rem 0;
 }
 
 table{
@@ -191,5 +191,7 @@ table tr:nth-child(even) {
     font-weight: normal;
     color: #555;
 }
+
+
 
 
