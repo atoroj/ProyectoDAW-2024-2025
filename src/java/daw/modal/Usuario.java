@@ -38,7 +38,10 @@ public class Usuario implements Serializable {
     String name;
     String surname;
     String pwd;
+    
+    @Column(unique = true)
     String nif;
+    
     String rol; //ALU | PROF | ADM
     String rutaimg;
     int phone;

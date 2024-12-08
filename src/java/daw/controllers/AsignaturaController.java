@@ -119,13 +119,14 @@ public class AsignaturaController extends HttpServlet {
                     String nombre = request.getParameter("nombre");
 
                     try {
-                        if (codigo.isEmpty() || nombre.isEmpty()) {
-                            throw new NullPointerException();
+                        if (Util.controlAsignatura(session, codigo, nombre)) {
+                            response.sendRedirect("/universidad/asignatura/nuevaasignatura");
+                            throw new Exception("Validación de asignatura fallida. Revise el código o el nombre.");
                         }
                         Asignatura asignatura = new Asignatura(codigo, nombre);
                         guardarAsignatura(asignatura);
                         request.getSession().setAttribute("msg", "Asignatura creada con exito");
-                        response.sendRedirect("/asignatura/listarasignaturas");
+                        response.sendRedirect("/universidad/asignatura/listarasignaturas");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

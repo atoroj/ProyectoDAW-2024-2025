@@ -35,13 +35,13 @@ public class Util {
             for (byte b : hashBytes) {
                 formatter.format("%02x", b);
             }
-            return prefijo+formatter.toString()+sujifo;
-        }catch(NoSuchAlgorithmException e){
-            throw new RuntimeException("Error al encriptar: "+e);
+            return prefijo + formatter.toString() + sujifo;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error al encriptar: " + e);
         }
 
     }
-    
+
     public static List<Asignatura> misAsignaturas(EntityManager em, HttpSession session, String email) {
         //Primera consulta para buscar al alumno
         Usuario user;
@@ -63,7 +63,7 @@ public class Util {
         }
         return misAsignaturas;
     }
-    
+
     public static List<Asignatura> misAsignaturasNoMatriculadas(EntityManager em, HttpSession session, String email) {
         //Primera consulta para buscar al alumno
         Usuario user;
@@ -88,4 +88,68 @@ public class Util {
         }
         return qAsignaturas.getResultList();
     }
+
+    public static boolean controlAsignatura(HttpSession session, String codigo, String nombre) {
+        boolean incorrecto = false;
+        String msg = "";
+        if (codigo == null || !codigo.matches("^[A-Z]{3}-\\d{3}$")) {
+            msg = "El código debe tener el formato 'ABC-123'. ";
+            incorrecto = true;
+        }
+
+        if (nombre == null || !nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$")) {
+            msg = "El nombre debe contener solo letras y espacios (entre 3 y 50 caracteres).";
+            incorrecto = true;
+        }
+        if (incorrecto) {
+            session.setAttribute("msgerror", msg);
+        }
+
+        return incorrecto;
+    }
+
+    public static boolean controlUsuario(HttpSession session, String email, String name, String surname, String pwd, String nif, String rol, String phone) {
+        boolean incorrecto = false;
+        String msg = "";
+
+        if (email == null || !email.matches("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            msg = "El email no tiene un formato válido";
+            incorrecto = true;
+        }
+
+        if (name == null || !name.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$")) {
+            msg = "El nombre debe contener solo letras y espacios (entre 3 y 50 caracteres)";
+            incorrecto = true;
+        }
+
+        if (surname == null || !surname.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$")) {
+            msg = "El apellido debe contener solo letras y espacios (entre 3 y 50 caracteres)";
+            incorrecto = true;
+        }
+
+        if (pwd == null || !pwd.matches("^(?=.*[a-zA-Z])(?=.*\\d).{5,}$")) {
+            msg = "La contraseña debe tener al menos 5 caracteres, incluyendo al menos una letra y un número";
+            incorrecto = true;
+        }
+
+        if (nif == null || !nif.matches("^\\d{8}[A-Za-z]$")) {
+            msg = "El NIF debe tener 8 dígitos seguidos de una letra";
+            incorrecto = true;
+        }
+
+        if (rol == null || !rol.matches("^(ALU|PROF|ADM)$")) {
+            msg = "El rol debe ser uno de los siguientes: ALU, PROF o ADM";
+            incorrecto = true;
+        }
+        if (phone == null || !phone.matches("^\\d{9}$")) {
+            msg = "El teléfono debe tener exactamente 9 dígitos";
+            incorrecto = true;
+        }
+        if (incorrecto) {
+            session.setAttribute("msgerror", msg);
+        }
+
+        return incorrecto;
+    }
+
 }

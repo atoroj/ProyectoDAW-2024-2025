@@ -16,21 +16,31 @@
     </head>
     <%@include file="shared/header.jsp" %>
     <body>
-
         <h1 class="titulostabla">Crear Usuario</h1>
-
+        <c:if test="${!empty sessionScope.msg}">
+            <div class="alert alert-success" role="alert">
+                ${sessionScope.msg}
+            </div>
+            <c:remove var="msg" scope="session"/>
+        </c:if>
+        <c:if test="${!empty sessionScope.msgerror}">
+            <div class="alert alert-danger" role="alert">
+                ${sessionScope.msgerror}
+            </div>
+            <c:remove var="msgerror" scope="session"/>
+        </c:if>
         <form action="/universidad/user/crearusuario" method="post" class="formularios">
             <div>
                 <label for="name">Nombre:</label>
-                <input class="form-control" type="text" id="name" name="name" required>
+                <input class="form-control" type="text" id="name" name="name"  maxlength="20" required>
                 <br><br>
 
                 <label for="surname">Apellido:</label>
-                <input class="form-control" type="text" id="surname" name="surname" required>
+                <input class="form-control" type="text" id="surname" name="surname" maxlength="40" required>
                 <br><br>
 
                 <label for="nif">NIF:</label>
-                <input class="form-control" type="text" id="nif" name="nif" required>
+                <input class="form-control" type="text" id="nif" name="nif"  maxlength="9" required>
                 <br><br>
             </div>
             <div>
@@ -39,11 +49,11 @@
                 <br><br>
 
                 <label for="phone">Teléfono:</label>
-                <input class="form-control" type="tel" id="phone" name="phone" required>
+                <input class="form-control" type="tel" id="phone" name="phone"  maxlength="9" required>
                 <br><br>
 
                 <label for="pwd">Contraseña:</label>
-                <input class="form-control" type="password" id="pwd" name="pwd" required>
+                <input class="form-control" type="password" id="pwd" name="pwd"  maxlength="15" required>
                 <br><br>
             </div>
             <label style="width: 100%"for="rol">Rol:</label>

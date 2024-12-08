@@ -140,13 +140,16 @@ public class UsuarioController extends HttpServlet {
                         String surname = request.getParameter("surname");
                         String nif = request.getParameter("nif");
                         String email = request.getParameter("email");
-                        int phone = Integer.valueOf(request.getParameter("phone"));
+                        String phoneString = request.getParameter("phone");
+                        
 
                         String pwd = Util.pwdMD5(request.getParameter("pwd"));
                         String rol = request.getParameter("rol");
-                        if (name.isEmpty() || email.isEmpty() || nif.isEmpty() || pwd.isEmpty() || rol.isEmpty()) {
-                            throw new NullPointerException();
+                        if (Util.controlUsuario(session, email, name, surname, pwd, nif, rol, phoneString)) {
+                            response.sendRedirect("/universidad/user/nuevousuario");
+                            throw new Exception("Validación de usuario fallida");
                         }
+                        int phone = Integer.valueOf(phoneString);
                         Usuario user = new Usuario(email, name, surname, pwd, nif, rol, phone);
                         guardarUsuario(user);
                         request.getSession().setAttribute("msg", "Usuario creado con exito");

@@ -18,6 +18,18 @@
     <%@include file="shared/header.jsp" %>
     <body>
         <h1 class="titulostabla">Crear Asignatura</h1>
+        <c:if test="${!empty sessionScope.msg}">
+            <div class="alert alert-success" role="alert">
+                ${sessionScope.msg}
+            </div>
+            <c:remove var="msg" scope="session"/>
+        </c:if>
+        <c:if test="${!empty sessionScope.msgerror}">
+            <div class="alert alert-danger" role="alert">
+                ${sessionScope.msgerror}
+            </div>
+            <c:remove var="msgerror" scope="session"/>
+        </c:if>
         <form class="formularios" action="/universidad/asignatura/crearasignatura" method="POST">
             <div>
                 <label for="codigo">Código de Asignatura</label>
