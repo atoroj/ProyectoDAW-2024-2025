@@ -97,8 +97,8 @@ public class Util {
             incorrecto = true;
         }
 
-        if (nombre == null || !nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$")) {
-            msg = "El nombre debe contener solo letras y espacios (entre 3 y 50 caracteres).";
+        if (nombre == null || !nombre.matches("^[a-zA-Z\\s]{3,40}$")) {
+            msg = "El nombre debe contener solo letras y espacios (entre 3 y 40 caracteres).";
             incorrecto = true;
         }
         if (incorrecto) {
@@ -117,18 +117,18 @@ public class Util {
             incorrecto = true;
         }
 
-        if (name == null || !name.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$")) {
-            msg = "El nombre debe contener solo letras y espacios (entre 3 y 50 caracteres)";
+        if (name == null || !name.matches("^[a-zA-Z\\s]{3,20}$")) {
+            msg = "El nombre debe contener solo letras y espacios (entre 3 y 20 caracteres)";
             incorrecto = true;
         }
 
-        if (surname == null || !surname.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]{3,50}$")) {
+        if (surname == null || !surname.matches("^[a-zA-Z\\s]{3,50}$")) {
             msg = "El apellido debe contener solo letras y espacios (entre 3 y 50 caracteres)";
             incorrecto = true;
         }
 
-        if (pwd == null || !pwd.matches("^(?=.*[a-zA-Z])(?=.*\\d).{5,}$")) {
-            msg = "La contraseña debe tener al menos 5 caracteres, incluyendo al menos una letra y un número";
+        if (pwd == null || !pwd.matches("^(?=.*[a-zA-Z])(?=.*\\d).{5,15}$")) {
+            msg = "La contraseña debe tener entre 5 y 15 caracteres, incluyendo al menos una letra y un número";
             incorrecto = true;
         }
 

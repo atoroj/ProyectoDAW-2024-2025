@@ -14,7 +14,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -24,7 +23,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import jakarta.transaction.UserTransaction;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -68,19 +66,15 @@ public class UsuarioController extends HttpServlet {
                 vista = "main";
                 break;
             case "/listaralumnos":
-                if (session.getAttribute("email") != null) {
-                    List<Usuario> alumList;
-                    TypedQuery<Usuario> alums = em.createQuery("SELECT u FROM Usuario u WHERE u.rol = :rol", Usuario.class);
-                    alums.setParameter("rol", "ALU");
-                    alumList = alums.getResultList();
-                    request.setAttribute("alumnos", alumList);
-                    vista = "userlist";
-                } else {
-                    vista = "error";
-                }
+                List<Usuario> alumList;
+                TypedQuery<Usuario> alums = em.createQuery("SELECT u FROM Usuario u WHERE u.rol = :rol", Usuario.class);
+                alums.setParameter("rol", "ALU");
+                alumList = alums.getResultList();
+                request.setAttribute("alumnos", alumList);
+                vista = "userlist";
                 break;
             case "/listarusuarios":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("rol").equals("ADM")) {
                     List<Usuario> userList;
                     TypedQuery<Usuario> users = em.createNamedQuery("Usuario.findAll", Usuario.class);
                     userList = users.getResultList();
@@ -92,22 +86,18 @@ public class UsuarioController extends HttpServlet {
                 }
                 break;
             case "/nuevousuario":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("rol").equals("ADM")) {
                     vista = "usercreate";
                 } else {
                     vista = "error";
                 }
                 break;
             case "/profile":
-                if (session.getAttribute("email") != null) {
-                    TypedQuery<Usuario> qUsuario = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
-                    qUsuario.setParameter("email", session.getAttribute("email"));
-                    Usuario user = qUsuario.getSingleResult();
-                    request.setAttribute("usuario", user);
-                    vista = "profile";
-                } else {
-                    vista = "error";
-                }
+                TypedQuery<Usuario> qUsuarioProfile = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
+                qUsuarioProfile.setParameter("email", session.getAttribute("email"));
+                Usuario userProfile = qUsuarioProfile.getSingleResult();
+                request.setAttribute("usuario", userProfile);
+                vista = "profile";
                 break;
             case "/asignatura":
                 long usuarioId = Long.parseLong(request.getParameter("id"));
@@ -134,14 +124,13 @@ public class UsuarioController extends HttpServlet {
         String accion = request.getPathInfo();
         switch (accion) {
             case "/crearusuario":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("rol").equals("ADM")) {
                     try {
                         String name = request.getParameter("name");
                         String surname = request.getParameter("surname");
                         String nif = request.getParameter("nif");
                         String email = request.getParameter("email");
                         String phoneString = request.getParameter("phone");
-                        
 
                         String pwd = Util.pwdMD5(request.getParameter("pwd"));
                         String rol = request.getParameter("rol");
@@ -162,21 +151,19 @@ public class UsuarioController extends HttpServlet {
                 }
                 break;
             case "/eliminar":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("rol").equals("ADM")) {
                     try {
                         long usuarioId = Long.parseLong(request.getParameter("id"));
                         Usuario user;
                         TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
                         qUser.setParameter("id", usuarioId);
                         user = qUser.getSingleResult();
+
                         utx.begin();
-
-                        if (!em.contains(user)) {
-                            user = em.merge(user);
-                        }
-
+                        user = em.find(Usuario.class, user.getId());
                         em.remove(user);
                         utx.commit();
+
                         session.setAttribute("msg", "Usuario eliminado con exito");
                         response.setStatus(HttpServletResponse.SC_OK);
                     } catch (Exception e) {
@@ -231,48 +218,52 @@ public class UsuarioController extends HttpServlet {
                 }
                 break;
             case "/nota":
-                try {
-                    //Busco el usuario
-                    long usuarioId = Long.parseLong(request.getParameter("userId"));
-                    Usuario user;
-                    TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
-                    qUser.setParameter("id", usuarioId);
-                    user = qUser.getSingleResult();
+                if (session.getAttribute("rol").equals("PROF")) {
+                    try {
+                        //Busco el usuario
+                        long usuarioId = Long.parseLong(request.getParameter("userId"));
+                        Usuario user;
+                        TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findById", Usuario.class);
+                        qUser.setParameter("id", usuarioId);
+                        user = qUser.getSingleResult();
 
-                    Set<UsuarioAsignatura> userAsignaturas = new HashSet<>();
-                    int index = 0;
+                        Set<UsuarioAsignatura> userAsignaturas = new HashSet<>();
+                        int index = 0;
 
-                    while (request.getParameter("notas[" + index + "].codigo") != null) {
-                        String codigo = request.getParameter("notas[" + index + "].codigo");
-                        int nota = Integer.parseInt(request.getParameter("notas[" + index + "].nota"));
-                        String curso = "2024-2025";
+                        while (request.getParameter("notas[" + index + "].codigo") != null) {
+                            String codigo = request.getParameter("notas[" + index + "].codigo");
+                            int nota = Integer.parseInt(request.getParameter("notas[" + index + "].nota"));
+                            String curso = "2024-2025";
 
-                        //Busco la asignatura
-                        Asignatura asign;
-                        TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findByCodigo", Asignatura.class);
-                        qAsign.setParameter("codigo", codigo);
-                        asign = qAsign.getSingleResult();
-                        
-                        //Busco la relacion usuario-asignatura
-                        UsuarioAsignatura uAsign;
-                        TypedQuery<UsuarioAsignatura> qUserAsign = em.createQuery("SELECT ua FROM UsuarioAsignatura ua WHERE ua.usuario = :user AND ua.asignatura =:asign", UsuarioAsignatura.class);
-                        qUserAsign.setParameter("user", user);
-                        qUserAsign.setParameter("asign", asign);
-                        uAsign = qUserAsign.getSingleResult();
-                        uAsign.setCurso(curso);
-                        uAsign.setNota(nota);
-                        
-                        utx.begin();
-                        em.merge(uAsign);
-                        utx.commit();
-                        index++;
+                            //Busco la asignatura
+                            Asignatura asign;
+                            TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findByCodigo", Asignatura.class);
+                            qAsign.setParameter("codigo", codigo);
+                            asign = qAsign.getSingleResult();
+
+                            //Busco la relacion usuario-asignatura
+                            UsuarioAsignatura uAsign;
+                            TypedQuery<UsuarioAsignatura> qUserAsign = em.createQuery("SELECT ua FROM UsuarioAsignatura ua WHERE ua.usuario = :user AND ua.asignatura =:asign", UsuarioAsignatura.class);
+                            qUserAsign.setParameter("user", user);
+                            qUserAsign.setParameter("asign", asign);
+                            uAsign = qUserAsign.getSingleResult();
+                            uAsign.setCurso(curso);
+                            uAsign.setNota(nota);
+
+                            utx.begin();
+                            em.merge(uAsign);
+                            utx.commit();
+                            index++;
+                        }
+                        response.setStatus(HttpServletResponse.SC_OK);
+                        session.setAttribute("msg", "Notas actualizadas con exito");
+                        response.sendRedirect("/universidad/user/listaralumnos");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     }
-                    response.setStatus(HttpServletResponse.SC_OK);
-                    session.setAttribute("msg", "Notas actualizadas con exito");
-                    response.sendRedirect("/universidad/user/listaralumnos");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                } else {
+                    response.sendRedirect("/universidad/user/error");
                 }
                 break;
             default:

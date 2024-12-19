@@ -37,7 +37,7 @@
             </div>
             <div>
                 <label for="nombre">Nombre de Asignatura</label>
-                <input type="text" id="nombre" name="nombre" required>
+                <input type="text" id="nombre" name="nombre" maxlength="40" required>
             </div>
             <button class="btn btn-primary" type="submit">Crear asignatura</button>
         </form>

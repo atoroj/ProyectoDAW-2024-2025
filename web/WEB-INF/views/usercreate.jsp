@@ -36,7 +36,7 @@
                 <br><br>
 
                 <label for="surname">Apellido:</label>
-                <input class="form-control" type="text" id="surname" name="surname" maxlength="40" required>
+                <input class="form-control" type="text" id="surname" name="surname" maxlength="50" required>
                 <br><br>
 
                 <label for="nif">NIF:</label>

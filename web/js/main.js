@@ -74,28 +74,24 @@ function anadirNota(userId) {
         cuerpo.append(`notas[${index - 1}].codigo`, codigo);
         cuerpo.append(`notas[${index - 1}].nota`, nota);
     });
-        cuerpo.append("userId", userId);
+    cuerpo.append("userId", userId);
 
     fetch(`/universidad/user/nota`, {
         method: 'POST',
         body: cuerpo
     }).then(response => {
         if (response.ok) {
-            console.log("Exitoso");
+            location.reload();
+        }else{
+            alert("Error al añadir la nota");
         }
     });
 }
 
-function anadirFav(asignaturaId){
+function anadirFav(asignaturaId) {
     const checkbox = document.querySelector(`#fav[value="${asignaturaId}"]`);
     const isChecked = checkbox.checked;
     fetch(`/universidad/asignatura/anadirfav?id=${asignaturaId}`, {
         method: 'POST'
-    }).then(response => {
-        if (response.ok) {
-            console.log("Perfecto");
-        } else {
-            alert("Error al eliminar asignatura");
-        }
     });
 }

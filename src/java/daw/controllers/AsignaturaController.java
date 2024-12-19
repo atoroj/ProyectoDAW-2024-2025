@@ -14,7 +14,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -57,7 +56,7 @@ public class AsignaturaController extends HttpServlet {
         }
         switch (accion) {
             case "/listarasignaturas":
-                if (session.getAttribute("email") != null && (session.getAttribute("rol").equals("PROF") || session.getAttribute("rol").equals("ADM"))) {
+                if ((session.getAttribute("rol").equals("PROF") || session.getAttribute("rol").equals("ADM"))) {
                     List<Asignatura> asignaturaList;
                     TypedQuery<Asignatura> asignaturas = em.createNamedQuery("Asignatura.findAll", Asignatura.class);
                     asignaturaList = asignaturas.getResultList();
@@ -68,7 +67,7 @@ public class AsignaturaController extends HttpServlet {
                 }
                 break;
             case "/misasignaturas":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
+                if (session.getAttribute("rol").equals("ALU")) {
 
                     Usuario user;
                     TypedQuery<Usuario> qUser = em.createNamedQuery("Usuario.findByEmail", Usuario.class);
@@ -85,7 +84,7 @@ public class AsignaturaController extends HttpServlet {
                 }
                 break;
             case "/nuevaasignatura":
-                if (session.getAttribute("email") != null && (session.getAttribute("rol").equals("ADM") || session.getAttribute("rol").equals("PROF"))) {
+                if ((session.getAttribute("rol").equals("ADM") || session.getAttribute("rol").equals("PROF"))) {
                     vista = "asignaturacreate";
                 } else {
                     vista = "error";
@@ -93,7 +92,7 @@ public class AsignaturaController extends HttpServlet {
 
                 break;
             case "/matricula":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
+                if (session.getAttribute("rol").equals("ALU")) {
                     request.setAttribute("misasignaturas", Util.misAsignaturas(em, session, (String) session.getAttribute("email")));
                     request.setAttribute("misasignaturasnomatriculadas", Util.misAsignaturasNoMatriculadas(em, session, (String) session.getAttribute("email")));
                     vista = "matriculacion";
@@ -114,7 +113,7 @@ public class AsignaturaController extends HttpServlet {
         String accion = request.getPathInfo();
         switch (accion) {
             case "/crearasignatura":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("rol").equals("ADM")) {
                     String codigo = request.getParameter("codigo");
                     String nombre = request.getParameter("nombre");
 
@@ -136,19 +135,19 @@ public class AsignaturaController extends HttpServlet {
 
                 break;
             case "/eliminar":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ADM")) {
+                if (session.getAttribute("rol").equals("ADM")) {
                     try {
                         long asignaturaId = Long.parseLong(request.getParameter("id"));
                         Asignatura asign;
                         TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
                         qAsign.setParameter("id", asignaturaId);
                         asign = qAsign.getSingleResult();
+                        
                         utx.begin();
-                        if (!em.contains(asign)) {
-                            asign = em.merge(asign);
-                        }
+                        asign = em.find(Asignatura.class, asign.getId());
                         em.remove(asign);
                         utx.commit();
+                        
                         response.setStatus(HttpServletResponse.SC_OK);
                         session.setAttribute("msg", "Asignatura eliminada con éxito");
                     } catch (Exception e) {
@@ -160,7 +159,7 @@ public class AsignaturaController extends HttpServlet {
                 }
                 break;
             case "/matricular":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
+                if (session.getAttribute("rol").equals("ALU")) {
                     try {
                         long asignaturaId = Long.parseLong(request.getParameter("id"));
                         //Recupero usuario
@@ -193,7 +192,7 @@ public class AsignaturaController extends HttpServlet {
 
                 break;
             case "/desmatricular":
-                if (session.getAttribute("email") != null && session.getAttribute("rol").equals("ALU")) {
+                if (session.getAttribute("rol").equals("ALU")) {
                     try {
                         long asignaturaId = Long.parseLong(request.getParameter("id"));
                         //Recupero usuario
@@ -219,11 +218,7 @@ public class AsignaturaController extends HttpServlet {
 
                         utx.begin();
                         em.merge(user);
-
-                        //Lo he visto en stackoverflow, hay que recuperar la entidad si no está vinculada, y se recupera asi
-                        if (!em.contains(userAsignatura)) {
-                            userAsignatura = em.merge(userAsignatura);
-                        }
+                        userAsignatura = em.find(UsuarioAsignatura.class, userAsignatura.getId());
                         em.remove(userAsignatura);
                         utx.commit();
                         session.setAttribute("msg", "Asignatura desmatriculada con éxito");
@@ -237,24 +232,23 @@ public class AsignaturaController extends HttpServlet {
                 break;
             case "/anadirfav":
                 long asignaturaId = Long.parseLong(request.getParameter("id"));
-                
+
                 Asignatura asign;
                 TypedQuery<Asignatura> qAsign = em.createNamedQuery("Asignatura.findById", Asignatura.class);
                 qAsign.setParameter("id", asignaturaId);
                 asign = qAsign.getSingleResult();
-                
+
                 List<Asignatura> favoritos = (List<Asignatura>) session.getAttribute("favoritos");
                 if (favoritos == null) {
                     favoritos = new ArrayList<>();
                 }
-                if(!favoritos.contains(asign)){
+                if (!favoritos.contains(asign)) {
                     favoritos.add(asign);
-                }else{
+                } else {
                     favoritos.remove(asign);
                 }
-                
+
                 session.setAttribute("favoritos", favoritos);
-                System.out.println("PRUEBA " + session.getAttribute("favoritos"));
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;
             default:
