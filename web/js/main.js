@@ -71,18 +71,20 @@ function anadirNota(userId) {
             return; // Saltar el encabezado de la tabla
         const codigo = fila.cells[0].innerText; // Código de la asignatura
         const nota = fila.querySelector('input#nota').value; // Nota por cada fila
-        cuerpo.append(`notas[${index - 1}].codigo`, codigo);
-        cuerpo.append(`notas[${index - 1}].nota`, nota);
+        if (nota > 1 && nota < 10) {
+            cuerpo.append(`notas[${index - 1}].codigo`, codigo);
+            cuerpo.append(`notas[${index - 1}].nota`, nota);
+        }
     });
     cuerpo.append("userId", userId);
-
+    console.log(cuerpo);
     fetch(`/universidad/user/nota`, {
         method: 'POST',
         body: cuerpo
     }).then(response => {
         if (response.ok) {
-            location.reload();
-        }else{
+            //location.reload();
+        } else {
             alert("Error al añadir la nota");
         }
     });

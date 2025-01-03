@@ -30,26 +30,25 @@
             <h2>${requestScope.usuario.nif}</h2>
         </div>
         <c:if test="${!empty requestScope.usuarioasignatura}">
-            <c:forEach var="usuarioasignatura" items="${requestScope.usuarioasignatura}">
-                <c:if test="${usuarioasignatura.nota == '0'}">
-                    <table>
-                        <tr>
-                            <th>Codigo</th>
-                            <th>Asignatura</th>
-                            <th>Nota</th>
-                        </tr>
 
+            <table>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Asignatura</th>
+                    <th>Nota</th>
+                </tr>
 
+                <c:forEach var="usuarioasignatura" items="${requestScope.usuarioasignatura}">
+                    <c:if test="${usuarioasignatura.nota == '0'}">
                         <tr>
                             <td>${usuarioasignatura.asignatura.codigo}</td>
                             <td>${usuarioasignatura.asignatura.nombre}</td>
                             <td><input class="form-control" type="text" id="nota" value="${usuarioasignatura.nota}"/></td>
                         </tr> 
-                        <
-                    </table>
-                    <button class="btn btn-primary" onclick="anadirNota(${requestScope.usuario.id})">Asignar notas</button>
-                </c:if>
-            </c:forEach>
+                    </c:if>
+                </c:forEach>
+            </table>
+            <button class="btn btn-primary" onclick="anadirNota(${requestScope.usuario.id})">Asignar notas</button>
         </c:if>
         <%@include file="shared/footer.jsp" %>
     </body>
